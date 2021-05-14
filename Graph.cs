@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 class Graph
 {
@@ -11,6 +13,7 @@ class Graph
 	{
 		V = v;
 		adj = new List<int>[v];
+        colors = Enumerable.Repeat(0, v).ToList();
 		for(int i = 0; i < v; ++i)
 			adj[i] = new List<int>();
 	}
@@ -71,5 +74,76 @@ class Graph
             Console.WriteLine("Graph contains cycle");
         else
             Console.WriteLine("Graph doesn't contains cycle");
+    }
+
+    // returns list of indexes sorted by degrees of V in descending order
+    public List<int> GetDescendingIndexesOfDegrees()
+    {                 
+        var degreeToIndex = this.adj.Select((x, i) => new KeyValuePair<int, int>(x.Count, i))
+            .OrderByDescending(x => x.Key)
+            .ToList(); 
+
+        // degree value corresponding to the index in original adjacency list
+        List<int> degrees = degreeToIndex.Select(x => x.Key).ToList();
+        List<int> indexes = degreeToIndex.Select(x => x.Value).ToList();
+
+        foreach (int i in indexes)
+        {
+            Console.WriteLine(i);
+        }
+
+        return indexes;
+    }
+
+    public int WelshPowellAlgorithm()
+    {
+        List<int> orderedVertices = this.GetDescendingIndexesOfDegrees();
+        int color = 0;
+
+        while (orderedVertices.Count != 0)
+        {
+            Thread.Sleep(2000);
+            System.Console.Write("ordered vertices: ");
+            System.Console.WriteLine("color: " + color);
+            foreach(var item in orderedVertices)
+            {
+                Console.Write(item.ToString()+ " ");
+            }
+
+            System.Console.WriteLine();
+            colors[orderedVertices[0]] = color;
+
+            List<int> restrictedNeighbours = new List<int>();
+            List<int> coloredVertices = new List<int>();
+            coloredVertices.Add(orderedVertices[0]);
+            restrictedNeighbours.AddRange(adj[orderedVertices[0]]);
+
+
+            System.Console.WriteLine("restrictedNeighbours: ");
+            foreach(var item in restrictedNeighbours)
+            {
+                Console.Write(item.ToString()+ " ");
+            }
+            System.Console.WriteLine();
+
+            for (int i = 1; i < orderedVertices.Count; i++)
+            {
+                int currentVertex = orderedVertices[i];
+                if (!restrictedNeighbours.Contains(currentVertex))
+                {
+                    colors[currentVertex] = color;
+                    restrictedNeighbours.AddRange(adj[currentVertex]);
+                    coloredVertices.Add(currentVertex);
+                }
+            }
+            foreach(int v in coloredVertices)
+            {
+                orderedVertices.Remove(v);
+            }
+
+            color++;
+        }
+
+        return color - 1;
     }
 }

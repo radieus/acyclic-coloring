@@ -12,7 +12,7 @@ namespace acyclic_coloring
             g1.addEdge(1, 0);
             g1.addEdge(0, 2);
             g1.addEdge(2, 1);
-            g1.addEdge(0, 3);
+            g1.addEdge(1, 3);
             g1.addEdge(3, 4);
             g1.PrintIfCyclic();
 
@@ -31,6 +31,8 @@ namespace acyclic_coloring
             g4.addEdge(1, 2);
             g4.addEdge(0, 3);
             g4.PrintIfCyclic();
+
+            System.Console.WriteLine(g1.WelshPowellAlgorithm());
         }
     }
 }
