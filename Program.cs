@@ -28,11 +28,20 @@ namespace acyclic_coloring
 
             Graph g4 = new Graph(4);
             g4.addEdge(2, 1);
-            g4.addEdge(1, 2);
+            g4.addEdge(1, 3);
             g4.addEdge(0, 3);
+            g4.addEdge(0, 1);
+            g4.printGraph();
             g4.PrintIfCyclic();
 
+            g4.colors[0] = 0;
+            g4.colors[1] = 1;
+            g4.colors[2] = 0;
+            g4.colors[3] = 2;
+            System.Console.WriteLine(g4.isProperCyclicColoring());
+          
             System.Console.WriteLine(g1.WelshPowellAlgorithm());
+
         }
     }
 }

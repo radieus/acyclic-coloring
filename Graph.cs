@@ -7,7 +7,7 @@ class Graph
 {
 	private int V; // number of vertices
 	private List<int> []adj; // Adjacency List Representation
-    private List<int> colors;  // i-th elem is an i-th vertex
+    public List<int> colors;  // i-th elem is an i-th vertex
 
 	public Graph(int v)
 	{
@@ -18,11 +18,80 @@ class Graph
 			adj[i] = new List<int>();
 	}
 
+    public void printGraph()
+    {
+        for (int i = 0; i < V; i++)
+        {
+            System.Console.Write(i + ": ");
+            foreach(int v in adj[i])
+            {
+                System.Console.Write(v + ", ");
+            }
+            System.Console.WriteLine();
+        }
+    }
+
 	public void addEdge(int v, int w)
 	{
 		adj[v].Add(w);
 		adj[w].Add(v);
 	}
+
+    private Graph createGraphFromColors(List<int> desiredColors)
+    {
+        Graph g = new Graph(this.V);
+        List<int> vertices = new List<int>();
+        for(int i = 0; i < this.V; i++)
+        {
+            if (desiredColors.Contains(this.colors[i]))
+            {
+                vertices.Add(i);
+            }
+        }
+
+        foreach(int v in vertices)
+        {
+            foreach(int addV in this.adj[v])
+            {
+                if (vertices.Contains(addV))
+                    g.adj[v].Add(addV);
+            }
+        }
+        return g;
+    }
+
+    public Boolean isProperCyclicColoring()
+    {
+        // check if 2-choosable subgraph is acyclic
+        var distinctColors = colors.Distinct();
+        int numberOfColors = distinctColors.Count();
+        System.Console.WriteLine(numberOfColors);
+
+        var combinations = distinctColors.SelectMany(x => distinctColors, (x, y) => Tuple.Create(x, y))
+                       .Where(tuple => tuple.Item1 < tuple.Item2);
+
+        foreach(var combination in combinations)
+        {
+            Graph g = createGraphFromColors(new List<int>{combination.Item1, combination.Item2});
+            System.Console.WriteLine(combination);
+            g.printGraph();
+            if (g.isCyclic())
+            {
+                return false;
+            }
+        }
+
+        // check if proper coloring
+        for (int i = 0; i < V; i++)
+        {
+            foreach(int neighbour in adj[i])
+            {
+                if (colors[neighbour] == colors[i])
+                    return false;
+            }
+        }
+        return true;
+    }
 
 	// a recursive function that uses visited[]
 	// and parent to detect cycle in subgraph
