@@ -71,6 +71,7 @@ class Graph
                 {
                     colors[v] = 0;
                     someCaseMet = true;
+                    break;
                 }
             }
             // if (!someCaseMet)
