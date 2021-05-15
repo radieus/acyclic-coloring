@@ -6,8 +6,10 @@ using System.Threading;
 class Graph
 {
 	private int V; // number of vertices
-	private List<int> []adj; // Adjacency List Representation
+    private int Delta; // highest degree of a graph
+	private List<int> []adj;  // Adjacency List Representation
     public List<int> colors;  // i-th elem is an i-th vertex
+    public List<int> []S;  // list of S(v) for every v
 
 	public Graph(int v)
 	{
@@ -36,6 +38,47 @@ class Graph
 		adj[v].Add(w);
 		adj[w].Add(v);
 	}
+
+    public int getDelta()
+    {
+        return this.adj.Select((x => x.Count)).Max();
+    }
+    public List<int> getCommonNeighbours(int u, int v)
+    {
+        return this.adj[u].Intersect(this.adj[v]).ToList();
+    }
+
+    public List<int> getS(int v, int upperBound = 2)
+    {   
+        int alpha = 1;
+        // int upperBound = Convert.ToInt32(alpha * Math.Pow(this.getDelta(), 4/3));
+        HashSet<int> neighbours2nd = new HashSet<int>();
+        foreach (int n in adj[v])
+        {
+            foreach (int nn in adj[n])
+            {
+                neighbours2nd.Add(nn);
+            }
+        }
+
+        List<int> NN = neighbours2nd.ToList();
+        List<KeyValuePair<int, int>> NN_ordered = new List<KeyValuePair<int, int>>();
+
+        // get count of common neighbours for each vertex in N^2(v)
+        foreach(int u in NN)
+        {
+            NN_ordered.Add(new KeyValuePair<int, int>(u, getCommonNeighbours(u,v).Count));
+        }
+
+        // sort the list by the value
+        NN_ordered.Sort((x, y) => (x.Value.CompareTo(y.Value)));
+
+        // get every vertex up to bound and get keys only
+        List<int> S = NN_ordered.Take(upperBound).Select(kvp => kvp.Key).ToList();
+
+        return S;
+
+    }
 
     private Graph createGraphFromColors(List<int> desiredColors)
     {
