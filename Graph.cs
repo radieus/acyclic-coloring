@@ -31,6 +31,61 @@ class Graph
         }
     }
 
+    public void MyAlgo()
+    {
+        for (int i = 0; i < colors.Count; i++)
+            colors[i] = 0;
+        
+        SortedList<int, int> degreeIndex = new SortedList<int, int>();
+        for (int i = 0; i < V; i++)
+            degreeIndex.Add(adj[i].Count, i);
+
+        int t = 10000;
+        for (int i = 1; i < t; i++)
+        {
+            var uncoloredVertices = new List<int>();
+            for(int j = 0; i < V; j++)
+                if (colors[j] == 0)
+                    uncoloredVertices.Add(i);
+
+            int v = -1;
+            foreach(var ver in degreeIndex)
+            {
+                if (uncoloredVertices.Contains(ver.Value))
+                {
+                    v = ver.Value;
+                    break;
+                }
+            }
+
+            colors[v] = i;
+
+            if (v == -1)
+                break;
+
+            Boolean someCaseMeet = false;
+            
+            foreach(int u in adj[v])
+            {
+                if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
+                {
+                    colors[v] = 0;
+                    someCaseMeet = true;
+                }
+            }
+            // if (!someCaseMeet)
+            // {
+            //     foreach(int u in getS(v))
+            //     {
+            //         if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
+            //         {
+            //             colors[v] = 0;
+            //             someCaseMeet = true;
+            //         }
+            //     }
+            // }
+        }
+    }
 	public void addEdge(int v, int w)
 	{
 		adj[v].Add(w);
@@ -167,7 +222,7 @@ class Graph
     public int WelshPowellAlgorithm()
     {
         List<int> orderedVertices = this.GetDescendingIndexesOfDegrees();
-        int color = 0;
+        int color = 1;
 
         while (orderedVertices.Count != 0)
         {
