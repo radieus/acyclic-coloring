@@ -44,9 +44,9 @@ class Graph
         for (int i = 1; i < t; i++)
         {
             var uncoloredVertices = new List<int>();
-            for(int j = 0; i < V; j++)
-                if (colors[j] == 0)
-                    uncoloredVertices.Add(i);
+            for(int index = 0; index < V; index++)
+                if (colors[index] == 0)
+                    uncoloredVertices.Add(index);
 
             int v = -1;
             foreach(var ver in degreeIndex)
@@ -63,24 +63,24 @@ class Graph
             if (v == -1)
                 break;
 
-            Boolean someCaseMeet = false;
+            Boolean someCaseMet = false;
             
             foreach(int u in adj[v])
             {
                 if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
                 {
                     colors[v] = 0;
-                    someCaseMeet = true;
+                    someCaseMet = true;
                 }
             }
-            // if (!someCaseMeet)
+            // if (!someCaseMet)
             // {
             //     foreach(int u in getS(v))
             //     {
             //         if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
             //         {
             //             colors[v] = 0;
-            //             someCaseMeet = true;
+            //             someCaseMet = true;
             //         }
             //     }
             // }
