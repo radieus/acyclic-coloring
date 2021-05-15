@@ -58,10 +58,10 @@ class Graph
                 }
             }
 
-            colors[v] = i;
-
             if (v == -1)
                 break;
+
+            colors[v] = i;
 
             Boolean someCaseMet = false;
             
