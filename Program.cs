@@ -40,8 +40,8 @@ namespace acyclic_coloring
             g4.colors[3] = 2;
             System.Console.WriteLine(g4.isProperCyclicColoring());
           
-            System.Console.WriteLine(g1.WelshPowellAlgorithm());
-
+            System.Console.WriteLine("Wels coloring: " + g1.WelshPowellAlgorithm());
+            System.Console.WriteLine("Star coloring: " + g1.StarAcyclicColoring());
         }
     }
 }
