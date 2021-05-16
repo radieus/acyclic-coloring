@@ -218,29 +218,34 @@ class Graph
 
     // Star Coloring 
     private List<int> vertices;
-    private List<int> forbiddenColors;
-    private List<List<Tuple<int,int>>> trees;
-    private Dictionary<Tuple<int,int>, Tuple<int,int>> firstVisitToTree;
-    private Tuple<int,int>[] firstNeighbor;
+    private List<List<int>> forbiddenColors;
+    private List<List<Edge>> trees;
+    private Dictionary<Edge, Tuple<int,int>> firstVisitToTree;
+    private Edge[] firstNeighbor;
 
     public void InitializeData()
-    {
+    {  
         vertices = Enumerable.Repeat(0, V).ToList();
-        
-        forbiddenColors = Enumerable.Repeat(-1, V).ToList();
-        
-        trees = new List<List<Tuple<int, int>>>();
-        for(var i=0; i<V; ++i)
-            for(var j=0; j<adj[i].Count; ++j)
-                MakeSet(i,adj[i][j]);
 
-        firstVisitToTree = new Dictionary<Tuple<int,int>, Tuple<int,int>>();
-        for(var i=0; i>-V; --i)
-            firstVisitToTree.Add(new Tuple<int, int>(i,i), new Tuple<int, int>(-1,-1));
+        for(var i=0; i<V; ++i)
+            colors[i] = i;
         
-        firstNeighbor = new Tuple<int, int>[colors.Count];
+        forbiddenColors = new List<List<int>>();
+        for(var i=0; i<V; ++i)
+            forbiddenColors.Add(new List<int>());
+        
+        trees = new List<List<Edge>>();
+        // for(var i=0; i<V; ++i)
+        //     for(var j=0; j<adj[i].Count; ++j)
+        //         MakeSet(i,adj[i][j]);
+
+        firstVisitToTree = new Dictionary<Edge, Tuple<int,int>>();
+        for(var i=0; i>-V; --i)
+            firstVisitToTree.Add(new Edge(i,i), new Tuple<int, int>(-1,-1));
+        
+        firstNeighbor = new Edge[colors.Count];
         for(var i=0; i<colors.Count; ++i)
-            firstNeighbor[i] = new Tuple<int, int>(-1,-1);
+            firstNeighbor[i] = new Edge(-1,-1);
     }
 
     public int NewAcyclicColoring()
@@ -249,11 +254,11 @@ class Graph
         foreach(var v in vertices)
         {
             foreach(var w in adj[v])
-                forbiddenColors[colors[w]] = v;
+                forbiddenColors[colors[w]].Add(v);
             
             foreach(var w in adj[v])
                 foreach(var x in adj[w])
-                    if(forbiddenColors[colors[x]] != v)
+                    if(!forbiddenColors[colors[x]].Contains(v))
                         PreventCycle(v,w,x);
 
             for(var i = 0; i < colors.Count; ++i)
@@ -279,8 +284,7 @@ class Graph
     public void PreventCycle(int v, int w, int x)
     {
         var e = Find(w,x);
-        var eContr = new Tuple<int,int>(e.Item2,e.Item1);
-        if(!firstVisitToTree.ContainsKey(e) && !firstVisitToTree.ContainsKey(eContr))
+        if(!firstVisitToTree.ContainsKey(e))
             firstVisitToTree[e] = new Tuple<int, int>(v,w);
         else
         {
@@ -288,20 +292,20 @@ class Graph
             if(firstVisit.Item1 != v)
                 firstVisitToTree[e] = new Tuple<int, int>(v,w);
             else if(firstVisit.Item2 != w)
-                forbiddenColors[colors[x]] = v;
+                forbiddenColors[colors[x]].Add(v);
         }
     }
 
     public void GrowStar(int v, int w)
     {
         MakeSet(v,w);
-        Tuple<int,int> pq = firstNeighbor[colors[w]];
-        if(pq.Item1 != v)
-            firstNeighbor[colors[w]] = new Tuple<int, int>(v,w);
+        Edge pq = firstNeighbor[colors[w]];
+        if(pq.a != v)
+            firstNeighbor[colors[w]] = new Edge(v,w);
         else
         {
-            Tuple<int,int> e1 = Find(v,w);
-            Tuple<int,int> e2 = Find(pq.Item1,pq.Item2);
+            Edge e1 = Find(v,w);
+            Edge e2 = Find(pq.a,pq.b);
             Union(e1,e2);
         }
     }
@@ -317,35 +321,91 @@ class Graph
 
     public void MakeSet(int v, int w)
     {
-        Tuple<int,int> t = new Tuple<int, int>(v,w);
-        List<Tuple<int,int>> tree = new List<Tuple<int, int>>();
+        Edge t = new Edge(v,w);
+        List<Edge> tree = new List<Edge>();
         tree.Add(t);
         trees.Add(tree);
     }
 
-    public Tuple<int,int> Find(int w, int x)
+    public Edge Find(int w, int x)
     {
-        Tuple<int,int> e = new Tuple<int, int>(w,x);
-        List<Tuple<int,int>> treeToReturn = new List<Tuple<int, int>>();
+        Edge e = new Edge(w,x);
+        List<Edge> treeToReturn = new List<Edge>();
         foreach(var tree in trees)
         {
             foreach(var edge in tree)
             {
-                if(edge.Item1 == e.Item1 && edge.Item2 == e.Item2)
+                if(edge == e)
                     treeToReturn = tree;
             }
         }
-        return treeToReturn[0];
+        if(treeToReturn.Count != 0)
+            return treeToReturn[0];
+        else
+        {
+            MakeSet(w,x);
+            return new Edge(w,x);
+        }
     }
 
-    public void Union(Tuple<int,int> edge1, Tuple<int,int> edge2)
+    public void Union(Edge edge1, Edge edge2)
     {
-        List<Tuple<int,int>> set1 = trees.Find(t => t.Contains(edge1));
-        List<Tuple<int,int>> set2 = trees.Find(t => t.Contains(edge2));
-        List<Tuple<int,int>> mergedSet = set1.Concat(set2).ToList();
+        List<Edge> set1 = trees.Find(t => t.Contains(edge1));
+        List<Edge> set2 = trees.Find(t => t.Contains(edge2));
+        List<Edge> mergedSet = set1.Concat(set2).ToList();
 
         trees.Remove(set1);
         trees.Remove(set2);
         trees.Add(mergedSet);
+
+    }
+}
+
+public class Edge
+{
+    public int a;
+    public int b;
+
+    public Edge(int a, int b)
+    {
+        this.a = a;
+        this.b = b;
+    }
+    public static bool operator == (Edge e1, Edge e2)
+    {
+        if(e1.a == e2.a && e1.b == e2.b)
+            return true;
+        if(e1.a == e2.b && e1.b == e2.a)
+            return true;    
+        else
+            return false;
+    }
+
+    public static bool operator != (Edge e1, Edge e2)
+    {
+        if(e1 == e2)
+            return false;
+        else
+            return true;
+    }
+
+    public override bool Equals(object obj)
+    {
+        var e = obj as Edge;
+        if(this == e)
+            return true;
+        else
+            return false;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + a.GetHashCode();
+            hash = hash * 23 + b.GetHashCode();
+            return hash;
+        }
     }
 }

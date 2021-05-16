@@ -6,7 +6,7 @@ namespace acyclic_coloring
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // Console.WriteLine("Hello World!");
 
             Graph g1 = new Graph(5);
             g1.addEdge(1, 0);
@@ -61,6 +61,9 @@ namespace acyclic_coloring
             g5.addEdge(4, 8);
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
+          
+            System.Console.WriteLine("Welsh coloring: " + g5.WelshPowellAlgorithm());
+            System.Console.WriteLine("New acyclic coloring: " + g5.NewAcyclicColoring());
             System.Console.WriteLine(g5.WelshPowellAlgorithm());
             System.Console.WriteLine(g5.isProperCyclicColoring());
         }
