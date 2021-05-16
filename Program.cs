@@ -61,8 +61,32 @@ namespace acyclic_coloring
             g5.addEdge(4, 8);
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
+            System.Console.WriteLine("delta:");
+            System.Console.WriteLine(g5.getDelta());
+            System.Console.WriteLine("========");
             System.Console.WriteLine(g5.WelshPowellAlgorithm());
             System.Console.WriteLine(g5.isProperCyclicColoring());
+
+            Graph g6 = new Graph(10);
+            g6.addEdge(0, 1);
+            g6.addEdge(0, 2);
+            g6.addEdge(0, 3);
+            g6.addEdge(0, 4);
+            g6.addEdge(5, 1);
+            g6.addEdge(6, 1);
+            g6.addEdge(6, 2);
+            g6.addEdge(6, 3);
+            g6.addEdge(7, 3);
+            g6.addEdge(7, 4);
+            g6.addEdge(8, 4);
+            g6.addEdge(9, 2);
+            g6.addEdge(9, 3);
+            g6.addEdge(9, 4);
+
+            foreach (var elem in g6.getS(0, 3)) 
+            {
+                System.Console.WriteLine(elem);
+            }
         }
     }
 }
