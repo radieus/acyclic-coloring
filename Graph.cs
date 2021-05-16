@@ -260,8 +260,10 @@ class Graph
                         PreventCycle(v,w,x);
 
             for(var i = 0; i < colors.Count; ++i)
-                if(!forbiddenColors[i].Contains(v))
+                if(!forbiddenColors[i].Contains(v)) {
                     colors[v] = i;
+                    break;
+                }
 
             foreach(var w in adj[v])
                 GrowStar(v,w);
@@ -275,10 +277,15 @@ class Graph
                     if(colors[x] == colors[v])
                         MergeTrees(v,w,x);
                 }
+
+            System.Console.WriteLine("i: " + v);
+            foreach(var c in colors)
+                System.Console.Write(c + " ");
+            System.Console.WriteLine();
         }
-        foreach(var c in colors)
-            System.Console.Write(c + " ");
-        System.Console.WriteLine();
+        // foreach(var c in colors)
+        //     System.Console.Write(c + " ");
+        // System.Console.WriteLine();
 
         return colors.Distinct().Count();
     }

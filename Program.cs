@@ -95,7 +95,7 @@ namespace acyclic_coloring
             l.Add(e1);
             System.Console.WriteLine(l.Contains(e2));
 
-            var dict = new Dictionary<Edge, int>(new UserServiceDataEqualityComparer());
+            var dict = new Dictionary<Edge, int>();
             dict.Add(e1, 10);
             System.Console.WriteLine(dict.ContainsKey(e2));
             System.Console.WriteLine(dict.ContainsKey(e3));
