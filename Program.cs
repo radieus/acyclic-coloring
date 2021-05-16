@@ -40,6 +40,9 @@ namespace acyclic_coloring
             g4.colors[2] = 0;
             g4.colors[3] = 2;
             System.Console.WriteLine(g4.isProperCyclicColoring());
+          
+            System.Console.WriteLine("Welsh coloring: " + g1.WelshPowellAlgorithm());
+            System.Console.WriteLine("New acyclic coloring: " + g1.NewAcyclicColoring());
 
             // https://iq.opengenus.org/welsh-powell-algorithm/
             Graph g5 = new Graph(9);
