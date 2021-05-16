@@ -20,8 +20,62 @@ namespace acyclic_coloring
         }
 
         [Fact]
-        public void Test3()
+        public void TestG1()
         {
+            Graph g1 = new Graph(5);
+            g1.addEdge(1, 0);
+            g1.addEdge(0, 2);
+            g1.addEdge(2, 1);
+            g1.addEdge(1, 3);
+            g1.addEdge(3, 4);
+            Assert.True(g1.isCyclic());
+
+            Assert.Equal(3, g1.WelshPowellAlgorithm());
+            Assert.True(g1.isProperCyclicColoring());
+
+            Assert.Equal(3, g1.NewAcyclicColoring());
+            Assert.True(g1.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestG2()
+        {
+            Graph g2 = new Graph(3);
+            g2.addEdge(0, 1);
+            g2.addEdge(1, 2);
+            Assert.False(g2.isCyclic());
+        }
+
+        [Fact]
+        public void TestG3()
+        {
+            Graph g3 = new Graph(2);
+            g3.addEdge(0, 1);
+            g3.addEdge(1, 0);
+            Assert.True(g3.isCyclic());
+        }
+
+        [Fact]
+        public void TestG4()
+        {
+            Graph g4 = new Graph(4);
+            g4.addEdge(2, 1);
+            g4.addEdge(1, 3);
+            g4.addEdge(0, 3);
+            g4.addEdge(0, 1);
+            Assert.True(g4.isCyclic());
+
+            g4.colors[0] = 0;
+            g4.colors[1] = 1;
+            g4.colors[2] = 0;
+            g4.colors[3] = 2;
+            Assert.True(g4.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestChordalGraph()
+        {
+            // https://iq.opengenus.org/welsh-powell-algorithm/
             Graph g5 = new Graph(9);
             g5.addEdge(0, 1);
             g5.addEdge(0, 3);
@@ -40,6 +94,9 @@ namespace acyclic_coloring
             g5.addEdge(7, 8);
 
             Assert.Equal(3, g5.WelshPowellAlgorithm());
+            Assert.True(g5.isProperCyclicColoring());
+
+            Assert.InRange<Int32>(g5.NewAcyclicColoring(), 3, 5);
             Assert.True(g5.isProperCyclicColoring());
         }
 
