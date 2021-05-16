@@ -1,6 +1,7 @@
 using Xunit;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace acyclic_coloring
 {
@@ -40,6 +41,26 @@ namespace acyclic_coloring
 
             Assert.Equal(3, g5.WelshPowellAlgorithm());
             Assert.True(g5.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestEdge()
+        {
+            var e1 = new Edge(1, 2);
+            var e2 = new Edge(2, 1);
+            var e3 = new Edge(0, 3);
+            Assert.Equal(0, e1.CompareTo(e2));
+            Assert.True(e1 == e2);
+
+            var l = new List<Edge>();
+            l.Add(e1);
+            Assert.True(l.Contains(e2));
+            Assert.False(l.Contains(e3));
+
+            var dict = new Dictionary<Edge, int>();
+            dict.Add(e1, 10);
+            Assert.True(dict.ContainsKey(e2));
+            Assert.False(dict.ContainsKey(e3));
         }
     }
 }
