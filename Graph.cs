@@ -221,17 +221,10 @@ class Graph
     private List<List<int>> forbiddenColors;
     private List<List<Edge>> trees;
     private Dictionary<Edge, Tuple<int,int>> firstVisitToTree;
-    private Tuple<int,int>[] firstNeighbor;
+    private Edge[] firstNeighbor;
 
     public void InitializeData()
-    {
-        Edge edge1 = new Edge(2,1);
-        Edge edge2 = new Edge(1,2);
-        if(edge1 == edge2)
-            Console.WriteLine("GIT");
-        else
-            Console.WriteLine("CHUJ");   
-
+    {  
         vertices = Enumerable.Repeat(0, V).ToList();
 
         for(var i=0; i<V; ++i)
@@ -249,6 +242,10 @@ class Graph
         firstVisitToTree = new Dictionary<Edge, Tuple<int,int>>();
         for(var i=0; i>-V; --i)
             firstVisitToTree.Add(new Edge(i,i), new Tuple<int, int>(-1,-1));
+        
+        firstNeighbor = new Edge[colors.Count];
+        for(var i=0; i<colors.Count; ++i)
+            firstNeighbor[i] = new Edge(-1,-1);
     }
 
     public int NewAcyclicColoring()
@@ -302,13 +299,13 @@ class Graph
     public void GrowStar(int v, int w)
     {
         MakeSet(v,w);
-        Tuple<int,int> pq = firstNeighbor[colors[w]];
-        if(pq.Item1 != v)
-            firstNeighbor[colors[w]] = new Tuple<int, int>(v,w);
+        Edge pq = firstNeighbor[colors[w]];
+        if(pq.a != v)
+            firstNeighbor[colors[w]] = new Edge(v,w);
         else
         {
             Edge e1 = Find(v,w);
-            Edge e2 = Find(pq.Item1,pq.Item2);
+            Edge e2 = Find(pq.a,pq.b);
             Union(e1,e2);
         }
     }
@@ -403,10 +400,9 @@ public class Edge
 
     public override int GetHashCode()
     {
-        unchecked // Overflow is fine, just wrap
+        unchecked
         {
             int hash = 17;
-            // Suitable nullity checks etc, of course :)
             hash = hash * 23 + a.GetHashCode();
             hash = hash * 23 + b.GetHashCode();
             return hash;
