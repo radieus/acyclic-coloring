@@ -296,7 +296,6 @@ class Graph
                 firstVisitToTree[e] = new Tuple<int, int>(v,w);
             else if(firstVisit.Item2 != w)
                 forbiddenColors[colors[x]].Add(v);
-                forbiddenColors[colors[x]] = v;
         }
     }
 
@@ -310,8 +309,6 @@ class Graph
         {
             Edge e1 = Find(v,w);
             Edge e2 = Find(pq.Item1,pq.Item2);
-            Tuple<int,int> e1 = Find(v,w);
-            Tuple<int,int> e2 = Find(pq.Item1,pq.Item2);
             Union(e1,e2);
         }
     }
