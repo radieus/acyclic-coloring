@@ -249,10 +249,6 @@ class Graph
         firstVisitToTree = new Dictionary<Edge, Tuple<int,int>>();
         for(var i=0; i>-V; --i)
             firstVisitToTree.Add(new Edge(i,i), new Tuple<int, int>(-1,-1));
-        
-        firstNeighbor = new Tuple<int, int>[colors.Count];
-        for(var i=0; i<colors.Count; ++i)
-            firstNeighbor[i] = new Tuple<int, int>(-1,-1);
     }
 
     public int NewAcyclicColoring()
@@ -300,6 +296,7 @@ class Graph
                 firstVisitToTree[e] = new Tuple<int, int>(v,w);
             else if(firstVisit.Item2 != w)
                 forbiddenColors[colors[x]].Add(v);
+                forbiddenColors[colors[x]] = v;
         }
     }
 
@@ -313,6 +310,8 @@ class Graph
         {
             Edge e1 = Find(v,w);
             Edge e2 = Find(pq.Item1,pq.Item2);
+            Tuple<int,int> e1 = Find(v,w);
+            Tuple<int,int> e2 = Find(pq.Item1,pq.Item2);
             Union(e1,e2);
         }
     }
