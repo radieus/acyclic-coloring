@@ -243,6 +243,27 @@ namespace acyclic_coloring
             g11.addEdge(9, 16);
             g11.addEdge(9, 17);
             g11.addEdge(9, 18);
+
+            Graph g12 = new Graph(13);
+            g12.addEdge(0, 1);
+            g12.addEdge(2, 1);
+            g12.addEdge(0, 2);
+            g12.addEdge(1, 3);
+            g12.addEdge(3, 4);
+            g12.addEdge(4, 1);
+            g12.addEdge(5, 2);
+            g12.addEdge(2, 6);
+            g12.addEdge(6, 5);
+            g12.addEdge(8, 0);
+            g12.addEdge(0, 7);
+            g12.addEdge(7, 8);
+            g12.addEdge(9, 3);
+            g12.addEdge(9, 10);
+            g12.addEdge(11, 8);
+            g12.addEdge(12, 5);
+            g12.addEdge(11, 6);
+            g12.addEdge(2, 8);
+            g12.addEdge(8, 6);
         }
     }
 }
