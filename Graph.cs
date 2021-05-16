@@ -243,7 +243,7 @@ class Graph
             firstNeighbor[i] = new Tuple<int, int>(-1,-1);
     }
 
-    public int StarAcyclicColoring()
+    public int NewAcyclicColoring()
     {
         InitializeData();
         foreach(var v in vertices)
@@ -279,7 +279,8 @@ class Graph
     public void PreventCycle(int v, int w, int x)
     {
         var e = Find(w,x);
-        if(!firstVisitToTree.ContainsKey(e))
+        var eContr = new Tuple<int,int>(e.Item2,e.Item1);
+        if(!firstVisitToTree.ContainsKey(e) && !firstVisitToTree.ContainsKey(eContr))
             firstVisitToTree[e] = new Tuple<int, int>(v,w);
         else
         {
@@ -325,16 +326,16 @@ class Graph
     public Tuple<int,int> Find(int w, int x)
     {
         Tuple<int,int> e = new Tuple<int, int>(w,x);
-        // List<Tuple<int,int>> treeToReturn = new List<Tuple<int, int>>();
-        // foreach(var tree in trees)
-        // {
-        //     foreach(var edge in tree)
-        //     {
-        //         if(edge.Item1 == e.Item1 && edge.Item2 == e.Item2)
-        //             treeToReturn = tree;
-        //     }
-        // }
-        return e;
+        List<Tuple<int,int>> treeToReturn = new List<Tuple<int, int>>();
+        foreach(var tree in trees)
+        {
+            foreach(var edge in tree)
+            {
+                if(edge.Item1 == e.Item1 && edge.Item2 == e.Item2)
+                    treeToReturn = tree;
+            }
+        }
+        return treeToReturn[0];
     }
 
     public void Union(Tuple<int,int> edge1, Tuple<int,int> edge2)
