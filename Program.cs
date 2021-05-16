@@ -22,23 +22,6 @@ namespace acyclic_coloring
         {
             Console.WriteLine("Hello World!");
 
-            System.Console.WriteLine("edge testing...");
-
-            var e1 = new Edge(1, 2);
-            var e2 = new Edge(2, 1);
-            var e3 = new Edge(0, 3);
-            System.Console.WriteLine(e1.CompareTo(e2));
-            System.Console.WriteLine(e1 == e2);
-
-            var l = new List<Edge>();
-            l.Add(e1);
-            System.Console.WriteLine(l.Contains(e2));
-
-            var dict = new Dictionary<Edge, int>();
-            dict.Add(e1, 10);
-            System.Console.WriteLine(dict.ContainsKey(e2));
-            System.Console.WriteLine(dict.ContainsKey(e3));
-
             Graph g10 = new Graph(20);
             g10.addEdge(0, 1);
             g10.addEdge(0, 1);
