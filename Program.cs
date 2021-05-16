@@ -3,11 +3,24 @@ using System.Collections.Generic;
 
 namespace acyclic_coloring
 {
+
+    public class UserServiceDataEqualityComparer : IEqualityComparer<Edge>
+    {
+        public bool Equals(Edge x, Edge y)
+        {
+            return x.Equals(y);
+        }
+
+        public int GetHashCode(Edge obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            // Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World!");
 
             Graph g1 = new Graph(5);
             g1.addEdge(1, 0);
@@ -17,6 +30,8 @@ namespace acyclic_coloring
             g1.addEdge(3, 4);
             g1.PrintIfCyclic();
             System.Console.WriteLine(g1.WelshPowellAlgorithm());
+            System.Console.WriteLine("g1 New acyclic coloring: " + g1.NewAcyclicColoring());
+            System.Console.WriteLine(g1.isProperCyclicColoring());
 
             Graph g2 = new Graph(3);
             g2.addEdge(0, 1);
@@ -42,8 +57,8 @@ namespace acyclic_coloring
             g4.colors[3] = 2;
             System.Console.WriteLine(g4.isProperCyclicColoring());
           
-            System.Console.WriteLine("Welsh coloring: " + g1.WelshPowellAlgorithm());
-            System.Console.WriteLine("New acyclic coloring: " + g1.NewAcyclicColoring());
+            System.Console.WriteLine("g1 Welsh coloring: " + g1.WelshPowellAlgorithm());
+            System.Console.WriteLine("g1 New acyclic coloring: " + g1.NewAcyclicColoring());
 
             // https://iq.opengenus.org/welsh-powell-algorithm/
             Graph g5 = new Graph(9);
@@ -63,15 +78,16 @@ namespace acyclic_coloring
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
           
-            System.Console.WriteLine("Welsh coloring: " + g5.WelshPowellAlgorithm());
-            System.Console.WriteLine("New acyclic coloring: " + g5.NewAcyclicColoring());
-            System.Console.WriteLine(g5.WelshPowellAlgorithm());
+            System.Console.WriteLine("g5 Welsh coloring: " + g5.WelshPowellAlgorithm());
             System.Console.WriteLine(g5.isProperCyclicColoring());
-            System.Console.WriteLine(g5.NewAcyclicColoring());
+            System.Console.WriteLine("g5 New acyclic coloring: " + g5.NewAcyclicColoring());
             System.Console.WriteLine(g5.isProperCyclicColoring());
+
+            System.Console.WriteLine("edge testing...");
 
             var e1 = new Edge(1,2);
             var e2 = new Edge(2,1);
+            var e3 = new Edge(0,3);
             System.Console.WriteLine(e1.CompareTo(e2));
             System.Console.WriteLine(e1 == e2);
 
@@ -79,9 +95,10 @@ namespace acyclic_coloring
             l.Add(e1);
             System.Console.WriteLine(l.Contains(e2));
 
-            var dict = new Dictionary<Edge, int>();
+            var dict = new Dictionary<Edge, int>(new UserServiceDataEqualityComparer());
             dict.Add(e1, 10);
             System.Console.WriteLine(dict.ContainsKey(e2));
+            System.Console.WriteLine(dict.ContainsKey(e3));
         }
     }
 }
