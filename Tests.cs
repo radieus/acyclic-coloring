@@ -42,7 +42,7 @@ namespace acyclic_coloring
             Graph g2 = new Graph(3);
             g2.addEdge(0, 1);
             g2.addEdge(1, 2);
-            Assert.True(g2.isCyclic());
+            Assert.False(g2.isCyclic());
         }
 
         [Fact]
