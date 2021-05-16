@@ -63,6 +63,11 @@ namespace acyclic_coloring
             g5.addEdge(7, 8);
             System.Console.WriteLine(g5.WelshPowellAlgorithm());
             System.Console.WriteLine(g5.isProperCyclicColoring());
+
+            g5.MyAlgo();
+            System.Console.WriteLine("MyAlgo---");
+            foreach(var c in g5.colors)
+                System.Console.WriteLine(c);
         }
     }
 }

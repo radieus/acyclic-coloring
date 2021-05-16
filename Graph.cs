@@ -31,6 +31,63 @@ class Graph
         }
     }
 
+    public void MyAlgo()
+    {
+        for (int i = 0; i < colors.Count; i++)
+            colors[i] = 0;
+        
+        var degreeIndex = new List<KeyValuePair<int, int>>();
+        for (int i = 0; i < V; i++)
+            degreeIndex.Add(new KeyValuePair<int, int>(i, adj[i].Count));
+        degreeIndex.OrderBy(o => o.Value);
+
+        int t = 10000;
+        for (int i = 1; i < t; i++)
+        {
+            var uncoloredVertices = new List<int>();
+            for(int index = 0; index < V; index++)
+                if (colors[index] == 0)
+                    uncoloredVertices.Add(index);
+
+            int v = -1;
+            foreach(var ver in degreeIndex)
+            {
+                if (uncoloredVertices.Contains(ver.Key))
+                {
+                    v = ver.Key;
+                    break;
+                }
+            }
+
+            if (v == -1)
+                break;
+
+            colors[v] = i;
+
+            Boolean someCaseMet = false;
+            
+            foreach(int u in adj[v])
+            {
+                if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
+                {
+                    colors[v] = 0;
+                    someCaseMet = true;
+                    break;
+                }
+            }
+            // if (!someCaseMet)
+            // {
+            //     foreach(int u in getS(v))
+            //     {
+            //         if (colors[u] == colors[v] && colors[u] != 0 && colors[v] != 0)
+            //         {
+            //             colors[v] = 0;
+            //             someCaseMet = true;
+            //         }
+            //     }
+            // }
+        }
+    }
 	public void addEdge(int v, int w)
 	{
 		adj[v].Add(w);
@@ -167,7 +224,7 @@ class Graph
     public int WelshPowellAlgorithm()
     {
         List<int> orderedVertices = this.GetDescendingIndexesOfDegrees();
-        int color = 0;
+        int color = 1;
 
         while (orderedVertices.Count != 0)
         {
