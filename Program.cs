@@ -56,7 +56,7 @@ namespace acyclic_coloring
             g4.colors[2] = 0;
             g4.colors[3] = 2;
             System.Console.WriteLine(g4.isProperCyclicColoring());
-          
+
             System.Console.WriteLine("g1 Welsh coloring: " + g1.WelshPowellAlgorithm());
             System.Console.WriteLine("g1 New acyclic coloring: " + g1.NewAcyclicColoring());
 
@@ -77,7 +77,7 @@ namespace acyclic_coloring
             g5.addEdge(4, 8);
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
-          
+
             System.Console.WriteLine("g5 Welsh coloring: " + g5.WelshPowellAlgorithm());
             System.Console.WriteLine(g5.isProperCyclicColoring());
             System.Console.WriteLine("g5 New acyclic coloring: " + g5.NewAcyclicColoring());
@@ -85,9 +85,9 @@ namespace acyclic_coloring
 
             System.Console.WriteLine("edge testing...");
 
-            var e1 = new Edge(1,2);
-            var e2 = new Edge(2,1);
-            var e3 = new Edge(0,3);
+            var e1 = new Edge(1, 2);
+            var e2 = new Edge(2, 1);
+            var e3 = new Edge(0, 3);
             System.Console.WriteLine(e1.CompareTo(e2));
             System.Console.WriteLine(e1 == e2);
 
