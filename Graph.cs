@@ -22,12 +22,12 @@ class Graph
     {
         for (int i = 0; i < V; i++)
         {
-            System.Console.Write(i + ": ");
+            //System.Console.Write(i + ": ");
             foreach(int v in adj[i])
             {
-                System.Console.Write(v + ", ");
+                //System.Console.Write(v + ", ");
             }
-            System.Console.WriteLine();
+            //System.Console.WriteLine();
         }
     }
 
@@ -65,7 +65,7 @@ class Graph
         // check if 2-choosable subgraph is acyclic
         var distinctColors = colors.Distinct();
         int numberOfColors = distinctColors.Count();
-        System.Console.WriteLine(numberOfColors);
+        System.Console.WriteLine("numberOfColors: " + numberOfColors);
 
         var combinations = distinctColors.SelectMany(x => distinctColors, (x, y) => Tuple.Create(x, y))
                        .Where(tuple => tuple.Item1 < tuple.Item2);
@@ -73,7 +73,7 @@ class Graph
         foreach(var combination in combinations)
         {
             Graph g = createGraphFromColors(new List<int>{combination.Item1, combination.Item2});
-            System.Console.WriteLine(combination);
+            //System.Console.WriteLine(combination);
             g.printGraph();
             if (g.isCyclic())
             {
@@ -156,10 +156,10 @@ class Graph
         List<int> degrees = degreeToIndex.Select(x => x.Key).ToList();
         List<int> indexes = degreeToIndex.Select(x => x.Value).ToList();
 
-        foreach (int i in indexes)
-        {
-            Console.WriteLine(i);
-        }
+        // foreach (int i in indexes)
+        // {
+        //     Console.WriteLine(i);
+        // }
 
         return indexes;
     }
@@ -171,15 +171,15 @@ class Graph
 
         while (orderedVertices.Count != 0)
         {
-            Thread.Sleep(2000);
-            System.Console.Write("ordered vertices: ");
-            System.Console.WriteLine("color: " + color);
-            foreach(var item in orderedVertices)
-            {
-                Console.Write(item.ToString()+ " ");
-            }
+            // Thread.Sleep(2000);
+            // System.Console.Write("ordered vertices: ");
+            // System.Console.WriteLine("color: " + color);
+            // foreach(var item in orderedVertices)
+            // {
+            //     Console.Write(item.ToString()+ " ");
+            // }
 
-            System.Console.WriteLine();
+            // System.Console.WriteLine();
             colors[orderedVertices[0]] = color;
 
             List<int> restrictedNeighbours = new List<int>();
@@ -187,13 +187,12 @@ class Graph
             coloredVertices.Add(orderedVertices[0]);
             restrictedNeighbours.AddRange(adj[orderedVertices[0]]);
 
-
-            System.Console.WriteLine("restrictedNeighbours: ");
-            foreach(var item in restrictedNeighbours)
-            {
-                Console.Write(item.ToString()+ " ");
-            }
-            System.Console.WriteLine();
+            // System.Console.WriteLine("restrictedNeighbours: ");
+            // foreach(var item in restrictedNeighbours)
+            // {
+            //     Console.Write(item.ToString()+ " ");
+            // }
+            // System.Console.WriteLine();
 
             for (int i = 1; i < orderedVertices.Count; i++)
             {
@@ -227,8 +226,9 @@ class Graph
     {  
         vertices = Enumerable.Repeat(0, V).ToList();
 
-        for(var i=0; i<V; ++i)
+        for(var i=0; i<V; i++)
             colors[i] = i;
+            //colors[i] = 0;
         
         forbiddenColors = new List<List<int>>();
         for(var i=0; i<V; ++i)
@@ -240,18 +240,16 @@ class Graph
         //         MakeSet(i,adj[i][j]);
 
         firstVisitToTree = new Dictionary<Edge, Tuple<int,int>>();
-        for(var i=0; i>-V; --i)
-            firstVisitToTree.Add(new Edge(i,i), new Tuple<int, int>(-1,-1));
-        
+
         firstNeighbor = new Edge[colors.Count];
-        for(var i=0; i<colors.Count; ++i)
+        for(var i=0; i<colors.Count; i++)
             firstNeighbor[i] = new Edge(-1,-1);
     }
 
     public int NewAcyclicColoring()
     {
         InitializeData();
-        foreach(var v in vertices)
+        for(int v = 0; v < this.V; v++)
         {
             foreach(var w in adj[v])
                 forbiddenColors[colors[w]].Add(v);
@@ -262,7 +260,7 @@ class Graph
                         PreventCycle(v,w,x);
 
             for(var i = 0; i < colors.Count; ++i)
-                if(i != v)
+                if(!forbiddenColors[i].Contains(v))
                     colors[v] = i;
 
             foreach(var w in adj[v])
@@ -278,6 +276,10 @@ class Graph
                         MergeTrees(v,w,x);
                 }
         }
+        foreach(var c in colors)
+            System.Console.Write(c + " ");
+        System.Console.WriteLine();
+
         return colors.Distinct().Count();
     }
 
@@ -358,54 +360,5 @@ class Graph
         trees.Remove(set2);
         trees.Add(mergedSet);
 
-    }
-}
-
-public class Edge
-{
-    public int a;
-    public int b;
-
-    public Edge(int a, int b)
-    {
-        this.a = a;
-        this.b = b;
-    }
-    public static bool operator == (Edge e1, Edge e2)
-    {
-        if(e1.a == e2.a && e1.b == e2.b)
-            return true;
-        if(e1.a == e2.b && e1.b == e2.a)
-            return true;    
-        else
-            return false;
-    }
-
-    public static bool operator != (Edge e1, Edge e2)
-    {
-        if(e1 == e2)
-            return false;
-        else
-            return true;
-    }
-
-    public override bool Equals(object obj)
-    {
-        var e = obj as Edge;
-        if(this == e)
-            return true;
-        else
-            return false;
-    }
-
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            int hash = 17;
-            hash = hash * 23 + a.GetHashCode();
-            hash = hash * 23 + b.GetHashCode();
-            return hash;
-        }
     }
 }

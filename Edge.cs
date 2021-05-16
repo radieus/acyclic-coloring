@@ -54,7 +54,20 @@ public class Edge : IComparable<Edge> , IEquatable<Edge>
             return false;
         }
 
-        public override int GetHashCode() => (a, b).GetHashCode();
+        //public override int GetHashCode() => (a, b).GetHashCode();
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                int min = Math.Min(a, b);
+                int max = Math.Max(a, b);
+                hash = hash * 23 + min.GetHashCode();
+                hash = hash * 23 + max.GetHashCode();
+                return hash;
+            }
+        }
         public static bool operator ==(Edge lhs, Edge rhs)
         {
             if (lhs is null)
