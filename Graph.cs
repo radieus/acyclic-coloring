@@ -235,7 +235,7 @@ class Graph
         vertices = Enumerable.Repeat(0, V).ToList();
 
         for(var i=0; i<V; ++i)
-            colors[i] = i+1;
+            colors[i] = i;
         
         forbiddenColors = new List<List<int>>();
         for(var i=0; i<V; ++i)
