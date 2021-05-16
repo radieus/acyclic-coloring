@@ -36,9 +36,10 @@ class Graph
         for (int i = 0; i < colors.Count; i++)
             colors[i] = 0;
         
-        SortedList<int, int> degreeIndex = new SortedList<int, int>();
+        var degreeIndex = new List<KeyValuePair<int, int>>();
         for (int i = 0; i < V; i++)
-            degreeIndex.Add(adj[i].Count, i);
+            degreeIndex.Add(new KeyValuePair<int, int>(i, adj[i].Count));
+        degreeIndex.OrderBy(o => o.Value);
 
         int t = 10000;
         for (int i = 1; i < t; i++)
@@ -51,9 +52,9 @@ class Graph
             int v = -1;
             foreach(var ver in degreeIndex)
             {
-                if (uncoloredVertices.Contains(ver.Value))
+                if (uncoloredVertices.Contains(ver.Key))
                 {
-                    v = ver.Value;
+                    v = ver.Key;
                     break;
                 }
             }
