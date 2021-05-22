@@ -371,5 +371,19 @@ namespace acyclic_coloring
             trees.Add(mergedSet);
 
         }
+
+        // public bool isVertexNS(int u, int v)
+        // {
+        //     if (adj[u])
+        // }
+        // public bool isPropertySatisfied(int v)
+        // {
+        //     for(int i = 0; i < adj[v].Count; i++)
+        //     {
+
+        //     }
+
+        //     return false;
+        // }
     }
 }
