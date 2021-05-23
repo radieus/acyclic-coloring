@@ -48,6 +48,7 @@ namespace acyclic_coloring
                 if (desiredColors.Contains(this.colors[i]))
                 {
                     vertices.Add(i);
+                    g.colors[i] = colors[i];
                 }
             }
 
@@ -389,7 +390,7 @@ namespace acyclic_coloring
                     continue;
                 }
 
-                if (!colorToEdges.ContainsKey(colors[ColorOfNeighbor]))
+                if (!colorToEdges.ContainsKey(ColorOfNeighbor))
                 {
                     colorToEdges[ColorOfNeighbor] = new List<int>();
                 }
@@ -514,19 +515,29 @@ namespace acyclic_coloring
                 int c = 0;
                 // color i-th vertex... (u)
                 while(!isColored)
-                {
+                {   
+                    Boolean neighbourHasSameColor = false;
                     c++;  // start with color 1
                     foreach(int n in adj[i]) // check if proper coloring
                     {
-                        if (colors[n] == c)
-                            continue;
+                        if (colors[n] == c) 
+                        {
+                            neighbourHasSameColor = true;
+                            break;
+                        }
                     }
+                    if (neighbourHasSameColor)
+                        continue;
+
                     // check if proper acyclic coloring
                     // Foreach subgraph H induced by color c and every other color in G
                     // H does not contain any cycle
                     Boolean areAllSubgraphsAcyclic = true;
                     foreach(int existingColor in existingColors)
                     {
+                        if(existingColor == c) // optimalisation - no need to induce graph from one color
+                            continue;
+
                         Graph g = createGraphFromColors(new List<int> { c, existingColor });
                         if (!g.isProperCyclicColoring())
                         {

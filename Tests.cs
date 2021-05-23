@@ -36,8 +36,8 @@ namespace acyclic_coloring
             Assert.Equal(3, g1.NewAcyclicColoring());
             Assert.True(g1.isProperCyclicColoring());
 
-            // Assert.Equal(3, g1.HalAlgorithm());
-            // Assert.True(g1.isProperCyclicColoring());
+            Assert.Equal(3, g1.HalAlgorithm());
+            Assert.True(g1.isProperCyclicColoring());
         }
 
         [Fact]
@@ -100,6 +100,9 @@ namespace acyclic_coloring
             Assert.True(g5.isProperCyclicColoring());
 
             Assert.InRange<Int32>(g5.NewAcyclicColoring(), 3, 5);
+            Assert.True(g5.isProperCyclicColoring());
+
+            Assert.Equal(3, g5.HalAlgorithm());
             Assert.True(g5.isProperCyclicColoring());
         }
 
@@ -165,12 +168,15 @@ namespace acyclic_coloring
 
             // Assert.InRange<Int32>(g10.NewAcyclicColoring(), 5, 5);
             // Assert.True(g10.isProperCyclicColoring());
+
+            // Assert.Equal(3, g10.HalAlgorithm());
+            // Assert.True(g10.isProperCyclicColoring());
         }
 
         [Fact]
         public void TestG11()
         {
-                        Graph g11 = new Graph(20);
+            Graph g11 = new Graph(20);
             g11.addEdge(0, 11);
             g11.addEdge(0, 12);
             g11.addEdge(0, 13);
@@ -300,6 +306,26 @@ namespace acyclic_coloring
 
             Assert.InRange<Int32>(g12.NewAcyclicColoring(), 4, 5);
             Assert.True(g12.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestG13() {
+            Graph g13 = new Graph(13);
+            g13.addEdge(0, 7);
+            g13.addEdge(1, 7);
+            g13.addEdge(2, 7);
+            g13.addEdge(3, 7);
+            g13.addEdge(4, 7);
+            g13.addEdge(5, 7);
+            g13.addEdge(6, 7);
+            g13.addEdge(8, 7);
+            g13.addEdge(9, 8);
+            g13.addEdge(8, 10);
+            g13.addEdge(8, 11);
+            g13.addEdge(8, 12);
+
+            Assert.Equal(2, g13.HalAlgorithm());
+            Assert.True(g13.isProperCyclicColoring());
         }
 
         [Fact]
