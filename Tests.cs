@@ -35,6 +35,9 @@ namespace acyclic_coloring
 
             Assert.Equal(3, g1.NewAcyclicColoring());
             Assert.True(g1.isProperCyclicColoring());
+
+            // Assert.Equal(3, g1.HalAlgorithm());
+            // Assert.True(g1.isProperCyclicColoring());
         }
 
         [Fact]

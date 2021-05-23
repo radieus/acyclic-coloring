@@ -76,7 +76,7 @@ namespace acyclic_coloring
             {
                 Graph g = createGraphFromColors(new List<int> { combination.Item1, combination.Item2 });
                 //System.Console.WriteLine(combination);
-                g.printGraph();
+                //g.printGraph();
                 if (g.isCyclic())
                 {
                     return false;
@@ -376,14 +376,172 @@ namespace acyclic_coloring
         // {
         //     if (adj[u])
         // }
-        // public bool isPropertySatisfied(int v)
-        // {
-        //     for(int i = 0; i < adj[v].Count; i++)
-        //     {
 
-        //     }
+        public Dictionary<int, List<int>> getColorToEdges(int u)
+        {
+            var colorToEdges = new Dictionary<int, List<int>>();  // key-color, value-edges
 
-        //     return false;
-        // }
+            foreach(int n in adj[u])
+            {
+                int ColorOfNeighbor = colors[n];
+                if (ColorOfNeighbor == 0)  // uncolored vertex yet
+                {
+                    continue;
+                }
+
+                if (!colorToEdges.ContainsKey(colors[ColorOfNeighbor]))
+                {
+                    colorToEdges[ColorOfNeighbor] = new List<int>();
+                }
+                colorToEdges[ColorOfNeighbor].Add(n);
+            }
+
+            return colorToEdges;
+        }
+        public List<int> isPropertyPiSatisfied(int u)
+        {
+            // returns empty list if P_i(u) is satisfied
+            // if not it returns list of neighbours of u to recolor
+            var l = new List<int>();
+            Dictionary<int, List<int>> colorToEdges = getColorToEdges(u);
+
+            System.Console.WriteLine("colorToEdges.Count" + colorToEdges.Count);
+
+            foreach(KeyValuePair<int, List<int>> colorList in colorToEdges)
+            {
+                int color = colorList.Key;
+                if (colorToEdges[color].Count <= 1)  // color appears only once
+                {
+                    continue;
+                }
+                foreach(int n in colorToEdges[color]) // n is colored Neighbor (i colors of neighbors)
+                {
+                    if (adj[n].Count == 1)
+                    {
+                        continue;
+                    }
+                    Dictionary<int, List<int>> colorToEdgesOfN = getColorToEdges(n);
+                    Boolean neighborToAdd = true;
+                    foreach(KeyValuePair<int, List<int>> entry in colorToEdgesOfN)  // iterate through NN's
+                    {
+                        if (entry.Value.Count > 1)  // our statement is not satisfied
+                        {
+                            neighborToAdd = false;
+                            break;
+                        }
+                    }
+
+                    if (neighborToAdd)
+                    {
+                        l.Add(n);
+                    }
+                }
+            }
+
+            return l;
+        }
+
+        public int HalAlgorithm()
+        {
+            for(int i = 0; i < colors.Count; i++)
+            {
+                colors[i] = 0;
+            }
+
+            // algo loop
+            for(int i = 0; i < this.V; i++)  // i - vertex
+            {
+                if (colors[i] != 0) // already colored, wtf
+                {
+                    continue;
+                }
+                List<int> verticesToRecolor = isPropertyPiSatisfied(i);
+                Dictionary<int, List<int>> colorToEdges = getColorToEdges(i);
+                if (verticesToRecolor.Count > 0)
+                {
+                    HashSet<int> restrictedColorsFromNeighbors = new HashSet<int>();
+                    //for (int n = 0; n < adj[i].Count; n++)
+                    foreach(int n in adj[i])
+                    {
+                        restrictedColorsFromNeighbors.Add(colors[n]);
+                    }
+                    for (int n = 0; n < verticesToRecolor.Count; n++) // recolor each vertex s.t. our condition stil fails
+                    {
+                        if (colorToEdges[colors[n]].Count == 1)  // do not recolor NS as it has been changed to singular neighbor
+                        {
+                            continue;
+                        }
+                        // search for restricted colors
+                        HashSet<int> restricedColors = new HashSet<int>();
+                        restricedColors.UnionWith(restrictedColorsFromNeighbors);
+                        for (int nn = 0; nn < adj[n].Count; nn++)
+                        {
+                            if (colors[nn] != 0)
+                            {
+                                restricedColors.Add(colors[nn]);
+                            }
+                        }
+                        // recolor
+                        for (int cc = 1; cc < int.MaxValue; cc++)
+                        {
+                            if (!restricedColors.Contains(cc))
+                            {
+                                colors[n] = cc;
+                                restricedColors.Add(cc);
+                                break;
+                            }
+                        }
+                        // remove newly recolored vertex
+                        if (colorToEdges[colors[n]].Contains(n)) 
+                        {
+                            colorToEdges[colors[n]].Remove(n);
+                        } else {
+                            throw new Exception("eh.");
+                        }
+                    }
+                    //verticesToRecolor = isPropertyPiSatisfied(i);
+                }
+
+                var existingColors = new HashSet<int>();
+                foreach(int col in colors)
+                {
+                    if (col != 0)
+                    {
+                        existingColors.Add(col);
+                    }
+                }
+                Boolean isColored = false;
+                int c = 0;
+                // color i-th vertex... (u)
+                while(!isColored)
+                {
+                    c++;  // start with color 1
+                    foreach(int n in adj[i]) // check if proper coloring
+                    {
+                        if (colors[n] == c)
+                            continue;
+                    }
+                    // check if proper acyclic coloring
+                    // Foreach subgraph H induced by color c and every other color in G
+                    // H does not contain any cycle
+                    Boolean areAllSubgraphsAcyclic = true;
+                    foreach(int existingColor in existingColors)
+                    {
+                        Graph g = createGraphFromColors(new List<int> { c, existingColor });
+                        if (!g.isProperCyclicColoring())
+                        {
+                            areAllSubgraphsAcyclic = false;
+                            break;
+                        }
+                    }
+                    if (areAllSubgraphsAcyclic)
+                    {
+                        colors[i] = c;
+                        isColored = true;
+                    }
+                }
+            }
+            return colors.Distinct().Count();;
+        }
     }
 }
