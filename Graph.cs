@@ -399,6 +399,23 @@ namespace acyclic_coloring
 
             return colorToEdges;
         }
+
+        public int getDelta()
+        {
+            return this.adj.Select((x => x.Count)).Max();
+        }
+
+        public int getC() 
+        {
+            // C is the upper bound for the acyclic chromatic number of the "3rd algo" (change name)
+            int delta = getDelta();
+            if (delta % 2 == 0)
+            {
+                return ((delta * (delta-1)) / 2) + 1;
+            } else {
+                return (delta * (delta-1)) / 2;
+            }
+        }
         public List<int> isPropertyPiSatisfied(int u)
         {
             // returns empty list if P_i(u) is satisfied
@@ -460,13 +477,17 @@ namespace acyclic_coloring
                 Dictionary<int, List<int>> colorToEdges = getColorToEdges(i);
                 if (verticesToRecolor.Count > 0)
                 {
+                    // TODO: check if proper logic behind it?
+                    // restricting to recolor n so that not to create a new pair of NS
                     HashSet<int> restrictedColorsFromNeighbors = new HashSet<int>();
-                    //for (int n = 0; n < adj[i].Count; n++)
                     foreach(int n in adj[i])
                     {
-                        restrictedColorsFromNeighbors.Add(colors[n]);
+                        if (colors[n] != 0)
+                            restrictedColorsFromNeighbors.Add(colors[n]);
                     }
-                    for (int n = 0; n < verticesToRecolor.Count; n++) // recolor each vertex s.t. our condition stil fails
+                    
+                    // recolor each vertex s.t. our condition stil fails
+                    foreach(int n in verticesToRecolor)
                     {
                         if (colorToEdges[colors[n]].Count == 1)  // do not recolor NS as it has been changed to singular neighbor
                         {
@@ -475,7 +496,8 @@ namespace acyclic_coloring
                         // search for restricted colors
                         HashSet<int> restricedColors = new HashSet<int>();
                         restricedColors.UnionWith(restrictedColorsFromNeighbors);
-                        for (int nn = 0; nn < adj[n].Count; nn++)
+                        
+                        foreach(int nn in adj[n])
                         {
                             if (colors[nn] != 0)
                             {
@@ -483,19 +505,23 @@ namespace acyclic_coloring
                             }
                         }
                         // recolor
+                        int oldColor = 0;
                         for (int cc = 1; cc < int.MaxValue; cc++)
                         {
                             if (!restricedColors.Contains(cc))
                             {
+                                oldColor = colors[n];
                                 colors[n] = cc;
-                                restricedColors.Add(cc);
+                                restricedColors.Add(cc); // correct?
+                                // restrictedColorsFromNeighbors.Add(cc);  // ???
                                 break;
                             }
                         }
+
                         // remove newly recolored vertex
-                        if (colorToEdges[colors[n]].Contains(n)) 
+                        if (colorToEdges[oldColor].Contains(n)) 
                         {
-                            colorToEdges[colors[n]].Remove(n);
+                            colorToEdges[oldColor].Remove(n);
                         } else {
                             throw new Exception("eh.");
                         }
@@ -535,7 +561,7 @@ namespace acyclic_coloring
                     Boolean areAllSubgraphsAcyclic = true;
                     foreach(int existingColor in existingColors)
                     {
-                        if(existingColor == c) // optimalisation - no need to induce graph from one color
+                        if (existingColor == c) // optimalisation - no need to induce graph from one color
                             continue;
 
                         Graph g = createGraphFromColors(new List<int> { c, existingColor });
