@@ -102,7 +102,8 @@ namespace acyclic_coloring
             Assert.InRange<Int32>(g5.NewAcyclicColoring(), 3, 5);
             Assert.True(g5.isProperCyclicColoring());
 
-            Assert.Equal(3, g5.HalAlgorithm());
+            int noColors = g5.HalAlgorithm();
+            Assert.InRange<Int32>(noColors, 3, g5.getC());
             Assert.True(g5.isProperCyclicColoring());
         }
 
@@ -309,22 +310,66 @@ namespace acyclic_coloring
         }
 
         [Fact]
-        public void TestG13() {
-            Graph g13 = new Graph(13);
-            g13.addEdge(0, 7);
-            g13.addEdge(1, 7);
-            g13.addEdge(2, 7);
-            g13.addEdge(3, 7);
-            g13.addEdge(4, 7);
-            g13.addEdge(5, 7);
-            g13.addEdge(6, 7);
-            g13.addEdge(8, 7);
-            g13.addEdge(9, 8);
-            g13.addEdge(8, 10);
-            g13.addEdge(8, 11);
-            g13.addEdge(8, 12);
+        public void TestButterfly() {
+            Graph Butterfly = new Graph(13);
+            Butterfly.addEdge(0, 7);
+            Butterfly.addEdge(1, 7);
+            Butterfly.addEdge(2, 7);
+            Butterfly.addEdge(3, 7);
+            Butterfly.addEdge(4, 7);
+            Butterfly.addEdge(5, 7);
+            Butterfly.addEdge(6, 7);
+            Butterfly.addEdge(8, 7);
+            Butterfly.addEdge(9, 8);
+            Butterfly.addEdge(8, 10);
+            Butterfly.addEdge(8, 11);
+            Butterfly.addEdge(8, 12);
 
-            Assert.Equal(2, g13.HalAlgorithm());
+            Assert.Equal(2, Butterfly.HalAlgorithm());
+            Assert.True(Butterfly.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void Testg13()
+        {
+            Graph g13 = new Graph(12);
+            g13.addEdge(0, 1);
+            g13.addEdge(1, 2);
+            g13.addEdge(2, 3);
+            g13.addEdge(3, 4);
+            g13.addEdge(4, 5);
+            g13.addEdge(5, 6);
+            g13.addEdge(0, 8);
+            g13.addEdge(8, 7);
+            g13.addEdge(7, 6);
+            g13.addEdge(9, 2);
+            g13.addEdge(2, 4);
+            g13.addEdge(4, 10);
+            g13.addEdge(10, 5);
+            g13.addEdge(5, 7);
+            g13.addEdge(7, 11);
+            g13.addEdge(11, 8);
+            g13.addEdge(8, 1);
+            g13.addEdge(1, 9);
+            g13.addEdge(2, 8);
+            g13.addEdge(2, 7);
+            g13.addEdge(2, 5);
+            g13.addEdge(1, 7);
+            g13.addEdge(1, 5);
+            g13.addEdge(1, 4);
+            g13.addEdge(8, 5);
+            g13.addEdge(8, 4);
+            g13.addEdge(4, 7);
+            g13.addEdge(2, 0);
+            g13.addEdge(7, 0);
+            g13.addEdge(2, 10);
+            g13.addEdge(7, 10);
+
+            Assert.Equal(6, g13.WelshPowellAlgorithm());
+            Assert.True(g13.isProperCyclicColoring());
+
+            int noColors = g13.HalAlgorithm();
+            Assert.InRange<Int32>(noColors, 6, g13.getC());
             Assert.True(g13.isProperCyclicColoring());
         }
 
