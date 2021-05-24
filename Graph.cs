@@ -469,7 +469,7 @@ namespace acyclic_coloring
             // algo loop
             for(int i = 0; i < this.V; i++)  // i - vertex
             {
-                if (colors[i] != 0) // already colored, wtf
+                if (colors[i] != 0) // already colored
                 {
                     continue;
                 }
@@ -523,7 +523,7 @@ namespace acyclic_coloring
                         {
                             colorToEdges[oldColor].Remove(n);
                         } else {
-                            throw new Exception("eh.");
+                            throw new Exception("Removal exception");
                         }
                     }
                     //verticesToRecolor = isPropertyPiSatisfied(i);
