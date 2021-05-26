@@ -571,7 +571,7 @@ namespace acyclic_coloring
                         {
                             colorToEdges[oldColor].Remove(n);
                         } else {
-                            throw new Exception("eh.");
+                            throw new Exception("Removal exception");
                         }
                     }
                     //verticesToRecolor = isPropertyPiSatisfied(i);
