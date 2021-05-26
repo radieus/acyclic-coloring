@@ -1,13 +1,54 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading;
 
 namespace acyclic_coloring
 {
+    public class GraphReader
+    {
+        public Graph createGraphFromFile(string fileFromDataset)
+        {
+            string startupPath = System.IO.Directory.GetCurrentDirectory();
+            string path = startupPath + "/dataset/" + fileFromDataset;
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("Cannot find the file.");
+            }
+            string line = "";
+            HashSet<int> vertices = new HashSet<int>();
+            List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
+            using (StreamReader sr = new StreamReader(path))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] numbers = line.Split(' ');
+                    int a = int.Parse(numbers[0]);
+                    int b = int.Parse(numbers[1]);
+                    edges.Add(new Tuple<int, int>(a, b));
+                    vertices.Add(a);
+                    vertices.Add(b);
+                }
+            }
+
+            Graph g = new Graph(vertices.Count);
+            foreach(Tuple<int, int> edge in edges)
+            {
+                g.addEdge(edge.Item1, edge.Item2);
+            }
+
+            return g;
+        }
+    }
     public class Graph
     {
         private int V; // number of vertices
+
+        public int getV()
+        {
+            return this.V;
+        }
         private List<int>[] adj; // Adjacency List Representation
         public List<int> colors;  // i-th elem is an i-th vertex
 
@@ -24,12 +65,12 @@ namespace acyclic_coloring
         {
             for (int i = 0; i < V; i++)
             {
-                //System.Console.Write(i + ": ");
+                System.Console.Write(i + ": ");
                 foreach (int v in adj[i])
                 {
-                    //System.Console.Write(v + ", ");
+                    System.Console.Write(v + ", ");
                 }
-                //System.Console.WriteLine();
+                System.Console.WriteLine();
             }
         }
 
@@ -68,7 +109,7 @@ namespace acyclic_coloring
             // check if 2-choosable subgraph is acyclic
             var distinctColors = colors.Distinct();
             int numberOfColors = distinctColors.Count();
-            System.Console.WriteLine("numberOfColors: " + numberOfColors);
+            //System.Console.WriteLine("numberOfColors: " + numberOfColors);
 
             var combinations = distinctColors.SelectMany(x => distinctColors, (x, y) => Tuple.Create(x, y))
                         .Where(tuple => tuple.Item1 < tuple.Item2);
@@ -249,7 +290,7 @@ namespace acyclic_coloring
                 firstNeighbor[i] = new Edge(-1, -1);
         }
 
-        public int NewAcyclicColoring()
+        public int NewAcyclicColoring(Boolean showProgress=false)
         {
             InitializeData();
             for (int v = 0; v < this.V; v++)
@@ -282,10 +323,13 @@ namespace acyclic_coloring
                             MergeTrees(v, w, x);
                     }
 
-                System.Console.WriteLine("i: " + v);
-                foreach (var c in colors)
-                    System.Console.Write(c + " ");
-                System.Console.WriteLine();
+                if (showProgress)
+                {
+                    System.Console.WriteLine("i: " + v);
+                    // foreach (var c in colors)
+                    //     System.Console.Write(c + " ");
+                    // System.Console.WriteLine();
+                }
             }
             // foreach(var c in colors)
             //     System.Console.Write(c + " ");
@@ -423,7 +467,7 @@ namespace acyclic_coloring
             var l = new List<int>();
             Dictionary<int, List<int>> colorToEdges = getColorToEdges(u);
 
-            System.Console.WriteLine("colorToEdges.Count" + colorToEdges.Count);
+            //System.Console.WriteLine("colorToEdges.Count" + colorToEdges.Count);
 
             foreach(KeyValuePair<int, List<int>> colorList in colorToEdges)
             {
@@ -459,7 +503,7 @@ namespace acyclic_coloring
             return l;
         }
 
-        public int HalAlgorithm()
+        public int HalAlgorithm(Boolean showProgress=false)
         {
             for(int i = 0; i < colors.Count; i++)
             {
@@ -469,6 +513,10 @@ namespace acyclic_coloring
             // algo loop
             for(int i = 0; i < this.V; i++)  // i - vertex
             {
+                if (showProgress)
+                {
+                    System.Console.WriteLine("i: " + i);
+                }
                 if (colors[i] != 0) // already colored, wtf
                 {
                     continue;
