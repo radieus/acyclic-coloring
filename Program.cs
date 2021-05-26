@@ -49,6 +49,17 @@ namespace acyclic_coloring
             int noColors = g5.HalAlgorithm();
             System.Console.WriteLine("g5 - noColors" + noColors);
             System.Console.WriteLine("g5.getC() : " + g5.getC());
+
+            GraphReader rd = new GraphReader();
+
+            Graph graphFromFile = rd.createGraphFromFile("facebook_combined.txt");
+            System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
+            System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
+            System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
+            //int fbColors = graphFromFile.HalAlgorithm();
+            //int fbColors = graphFromFile.NewAcyclicColoring(showProgress: true);
+            //System.Console.WriteLine(fbColors);
+            //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
         }
     }
 }
