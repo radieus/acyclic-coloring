@@ -7,6 +7,17 @@ namespace acyclic_coloring
 {
     public class UnitTest1
     {
+        [Fact(Skip ="wrong path in tests")]
+        public void TestFb()
+        {
+            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            foreach(var f in fileArray)
+            {
+                System.Console.WriteLine(f);
+            }
+        }
+
         [Fact(Skip="wrong ans")]
         public void SampleWrongAnsTest()
         {

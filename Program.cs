@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace acyclic_coloring
@@ -46,20 +47,35 @@ namespace acyclic_coloring
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
 
-            int noColors = g5.HalAlgorithm();
-            System.Console.WriteLine("g5 - noColors" + noColors);
-            System.Console.WriteLine("g5.getC() : " + g5.getC());
+            // int noColors = g5.HalAlgorithm();
+            // System.Console.WriteLine("g5 - noColors" + noColors);
+            // System.Console.WriteLine("g5.getC() : " + g5.getC());
 
             GraphReader rd = new GraphReader();
 
-            Graph graphFromFile = rd.createGraphFromFile("facebook_combined.txt");
-            System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
-            System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
-            System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
+            // Graph graphFromFile = rd.createGraphFromDataset("facebook_combined.txt");
+            // System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
+            // System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
+            // System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
             //int fbColors = graphFromFile.HalAlgorithm();
             //int fbColors = graphFromFile.NewAcyclicColoring(showProgress: true);
             //System.Console.WriteLine(fbColors);
             //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
+
+            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            foreach(var f in fileArray)
+            {
+                System.Console.WriteLine(f);
+            }
+            Graph f1 = rd.createGraphFromPath(fileArray[0]);
+            System.Console.WriteLine("f1 getDelta: " + f1.getDelta());
+            System.Console.WriteLine("f1 getC: " + f1.getC());
+            System.Console.WriteLine("f1 getV: " + f1.getV());
+            // int fbColors = f1.HalAlgorithm(showProgress: true);
+            // //int fbColors = f1.NewAcyclicColoring(showProgress: true);
+            // System.Console.WriteLine(fbColors);
+            // System.Console.WriteLine(f1.isProperCyclicColoring());
         }
     }
 }

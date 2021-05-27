@@ -8,16 +8,14 @@ namespace acyclic_coloring
 {
     public class GraphReader
     {
-        public Graph createGraphFromFile(string fileFromDataset)
+        public Graph createGraphFromPath(string path)
         {
-            string startupPath = System.IO.Directory.GetCurrentDirectory();
-            string path = startupPath + "/dataset/" + fileFromDataset;
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException("Cannot find the file.");
             }
             string line = "";
-            HashSet<int> vertices = new HashSet<int>();
+            SortedSet<int> vertices = new SortedSet<int>();
             List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
             using (StreamReader sr = new StreamReader(path))
             {
@@ -32,13 +30,29 @@ namespace acyclic_coloring
                 }
             }
 
+            Dictionary<int, int> mapFromZero = new Dictionary<int, int>();
+            int i = 0;
+            foreach(var v in vertices)
+            {
+                mapFromZero.Add(v, i);
+                i++;
+                System.Console.WriteLine(i + " " + v);
+            }         
+
             Graph g = new Graph(vertices.Count);
             foreach(Tuple<int, int> edge in edges)
             {
-                g.addEdge(edge.Item1, edge.Item2);
+                g.addEdge(mapFromZero[edge.Item1], mapFromZero[edge.Item2]);
+                //g.addEdge(edge.Item1, edge.Item2);
             }
 
             return g;
+        }
+        public Graph createGraphFromDataset(string fileFromDataset)
+        {
+            string startupPath = System.IO.Directory.GetCurrentDirectory();
+            string path = startupPath + "/dataset/" + fileFromDataset;
+            return createGraphFromPath(path);
         }
     }
     public class Graph
