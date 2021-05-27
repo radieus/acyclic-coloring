@@ -53,10 +53,10 @@ namespace acyclic_coloring
 
             GraphReader rd = new GraphReader();
 
-            Graph graphFromFile = rd.createGraphFromDataset("facebook_combined.txt");
-            System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
-            System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
-            System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
+            // Graph graphFromFile = rd.createGraphFromDataset("facebook_combined.txt");
+            // System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
+            // System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
+            // System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
             //int fbColors = graphFromFile.HalAlgorithm();
             //int fbColors = graphFromFile.NewAcyclicColoring(showProgress: true);
             //System.Console.WriteLine(fbColors);
@@ -72,10 +72,10 @@ namespace acyclic_coloring
             System.Console.WriteLine("f1 getDelta: " + f1.getDelta());
             System.Console.WriteLine("f1 getC: " + f1.getC());
             System.Console.WriteLine("f1 getV: " + f1.getV());
-            int fbColors = f1.HalAlgorithm(showProgress: true);
-            //int fbColors = f1.NewAcyclicColoring(showProgress: true);
-            System.Console.WriteLine(fbColors);
-            System.Console.WriteLine(f1.isProperCyclicColoring());
+            // int fbColors = f1.HalAlgorithm(showProgress: true);
+            // //int fbColors = f1.NewAcyclicColoring(showProgress: true);
+            // System.Console.WriteLine(fbColors);
+            // System.Console.WriteLine(f1.isProperCyclicColoring());
         }
     }
 }
