@@ -70,34 +70,34 @@ namespace acyclic_coloring
             //System.Console.WriteLine(fbColors);
             //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
 
-            // run for all Graphs from facebook dataset
-            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
-            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
-            foreach(var f in fileArray)
-            {
-                System.Console.WriteLine(f);
-                if (f.Contains("1912.edges")) {
-                    System.Console.WriteLine("SKIP");
-                    continue;
-                }
-                Graph g = rd.createGraphFromPath(f);
-                System.Console.WriteLine("f1 getV: " + g.getV());
-                int noColors = g.HalAlgorithm(showProgress: false);
-                System.Console.WriteLine("f1 fbColors: " + noColors);
-                System.Console.WriteLine(g.isProperCyclicColoring());
-            }
+            // // run for all Graphs from facebook dataset
+            // string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            // string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            // foreach(var f in fileArray)
+            // {
+            //     System.Console.WriteLine(f);
+            //     if (f.Contains("1912.edges")) {
+            //         System.Console.WriteLine("SKIP");
+            //         continue;
+            //     }
+            //     Graph g = rd.createGraphFromPath(f);
+            //     System.Console.WriteLine("f1 getV: " + g.getV());
+            //     int noColors = g.HalAlgorithm(showProgress: false);
+            //     System.Console.WriteLine("f1 fbColors: " + noColors);
+            //     System.Console.WriteLine(g.isProperCyclicColoring());
+            // }
 
-            DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
+            // DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
 
-            foreach(FileInfo fi in dir.GetFiles())
-            {
-                System.Console.WriteLine(fi.FullName);  // which file
-                Graph g = rd.createGraphFromPath(fi.FullName);
-                //g.saveToFile("g2.txt");
-                g.HalAlgorithm();
-                g.printColoring();
-                System.Console.WriteLine(g.isProperCyclicColoring(printDebug: true));
-            }
+            // foreach(FileInfo fi in dir.GetFiles())
+            // {
+            //     System.Console.WriteLine(fi.FullName);  // which file
+            //     Graph g = rd.createGraphFromPath(fi.FullName);
+            //     //g.saveToFile("g2.txt");
+            //     g.HalAlgorithm();
+            //     g.printColoring();
+            //     System.Console.WriteLine(g.isProperCyclicColoring(printDebug: true));
+            // }
         }
     }
 }
