@@ -6,13 +6,15 @@ using System.Collections.Generic;
 
 namespace acyclic_coloring
 {
-    public class UnitTest1
+    public class UnitTests
     {
         private GraphReader rd;
+        public string startupPath;
         private readonly ITestOutputHelper output;
 
-        public UnitTest1(ITestOutputHelper output)
+        public UnitTests(ITestOutputHelper output)
         {
+            this.startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
             this.output = output;
             this.rd = new GraphReader();
         }
@@ -424,18 +426,39 @@ namespace acyclic_coloring
 
         [Fact]
         public void TestRandomGraphs() {
-            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
             DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
 
             foreach(FileInfo fi in dir.GetFiles())
             {
-                output.WriteLine(fi.FullName);
+                // output.WriteLine(fi.FullName);
 
                 Graph g = rd.createGraphFromPath(fi.FullName);
                 Assert.InRange<Int32>(g.HalAlgorithm(), 3, g.getC());
                 Assert.True(g.isProperCyclicColoring());
             }
+        }
 
+        [Fact]
+        public void TestNotAcyclicBy2Colors() {
+            // test if isProperCyclicColoring detects wrong coloring by 2-choosable graph not being acyclic
+            // in the given specific coloring
+            string graphPath = startupPath + "dataset/random/r.txt";
+            Graph g = rd.createGraphFromPath(graphPath);
+            g.colors[0] = 1;
+            g.colors[1] = 10;
+            g.colors[2] = 3;
+            g.colors[3] = 6;
+            g.colors[4] = 2;
+            g.colors[5] = 2;
+            g.colors[6] = 2;
+            g.colors[7] = 10;
+            g.colors[8] = 6;
+            g.colors[9] = 6;
+            g.colors[10] = 13;
+            g.colors[11] = 6;
+            g.colors[12] = 13;
+            // there is a cycle in 1-8-7-3
+            Assert.False(g.isProperCyclicColoring());
         }
 
         [Fact]
@@ -444,7 +467,6 @@ namespace acyclic_coloring
             string newGraphFileTxt = "g.txt";
             g.saveToFile(newGraphFileTxt);
 
-            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
             Graph gLoaded = rd.createGraphFromPath(startupPath + newGraphFileTxt);
 
             List<int>[] gAdj = g.getAdj();
@@ -489,6 +511,46 @@ namespace acyclic_coloring
             dict.Add(e1, 10);
             Assert.True(dict.ContainsKey(e2));
             Assert.False(dict.ContainsKey(e3));
+        }
+    }
+
+    public class BigGraphsTests
+    {
+        private GraphReader rd;
+        public string startupPath;
+        private readonly ITestOutputHelper output;
+        public BigGraphsTests(ITestOutputHelper output)
+        {
+            this.startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            this.output = output;
+            this.rd = new GraphReader();
+        }
+
+        [Fact]
+        public void TestFacebookGraphs() 
+        {
+            // run for all Graphs from facebook dataset
+            string folderPath = startupPath + "/dataset/facebook/";
+            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            foreach(var f in fileArray)
+            {
+                output.WriteLine(f);
+                if (f.Contains("1912.edges")) {
+                    // we dont know yet why it executes for a long time
+                    continue;
+                }
+                Graph g = rd.createGraphFromPath(f);
+                int noColors = g.HalAlgorithm(showProgress: false);
+                //System.Console.WriteLine("getV: " + g.getV());
+                //System.Console.WriteLine("fbColors: " + noColors);
+                Boolean isProper = g.isProperCyclicColoring();
+                if (isProper)
+                    output.WriteLine("ok");
+                else
+                    output.WriteLine("wrong");
+                Assert.True(isProper);
+                Assert.InRange<Int32>(noColors, 3, g.getC());
+            }
         }
     }
 }

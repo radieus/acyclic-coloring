@@ -52,52 +52,42 @@ namespace acyclic_coloring
             // System.Console.WriteLine("g5 - noColors" + noColors);
             // System.Console.WriteLine("g5.getC() : " + g5.getC());
 
-            ///////////////////////////
+            // /////////////////////////
+            // // generating 100 random Graphs and saving to /dataset/random/
+            // for (int i = 0; i < 500; i++) {
+            //     var gen = new RandomGraphGenerator();
+            //     Graph g = gen.generate(100, 500);
+            //     string name = "gen100-500_" + i + ".txt";
+            //     string folderRelativePath = "dataset/random/";
+            //     g.saveToFile(folderRelativePath + name);
+            //     Graph g2 = rd.createGraphFromPath(startupPath + folderRelativePath + name);
+            //     g2.saveToFile(folderRelativePath + name);
+            // }
+            /////////////////////////
             //// generating random Graph
             // var gen = new RandomGraphGenerator();
-            // Graph g = gen.generate(15, 20);
+            // Graph g = gen.generate(100, 500);
             // g.saveToFile("g.txt");
             // Graph g2 = rd.createGraphFromPath(startupPath + "g.txt");
-            // g2.saveToFile("g.txt");
-            ///////////////////////////
+            // g2.saveToFile("g2.txt");
+            /////////////////////////
 
-            // Graph graphFromFile = rd.createGraphFromDataset("facebook_combined.txt");
-            // System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
-            // System.Console.WriteLine("graphFromFile getC: " + graphFromFile.getC());
-            // System.Console.WriteLine("graphFromFile getV: " + graphFromFile.getV());
-            //int fbColors = graphFromFile.HalAlgorithm();
-            //int fbColors = graphFromFile.NewAcyclicColoring(showProgress: true);
-            //System.Console.WriteLine(fbColors);
-            //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
-
-            // run for all Graphs from facebook dataset
-            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
-            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
-            foreach(var f in fileArray)
-            {
-                System.Console.WriteLine(f);
-                if (f.Contains("1912.edges")) {
-                    System.Console.WriteLine("SKIP");
-                    continue;
-                }
-                Graph g = rd.createGraphFromPath(f);
-                System.Console.WriteLine("f1 getV: " + g.getV());
-                int noColors = g.HalAlgorithm(showProgress: false);
-                System.Console.WriteLine("f1 fbColors: " + noColors);
-                System.Console.WriteLine(g.isProperCyclicColoring());
-            }
-
-            DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
-
-            foreach(FileInfo fi in dir.GetFiles())
-            {
-                System.Console.WriteLine(fi.FullName);  // which file
-                Graph g = rd.createGraphFromPath(fi.FullName);
-                //g.saveToFile("g2.txt");
-                g.HalAlgorithm();
-                g.printColoring();
-                System.Console.WriteLine(g.isProperCyclicColoring(printDebug: true));
-            }
+            // // run for all Graphs from facebook dataset
+            // string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            // string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            // foreach(var f in fileArray)
+            // {
+            //     System.Console.WriteLine(f);
+            //     if (f.Contains("1912.edges")) {
+            //         System.Console.WriteLine("SKIP");
+            //         continue;
+            //     }
+            //     Graph g = rd.createGraphFromPath(f);
+            //     System.Console.WriteLine("f1 getV: " + g.getV());
+            //     int noColors = g.HalAlgorithm(showProgress: false);
+            //     System.Console.WriteLine("f1 fbColors: " + noColors);
+            //     System.Console.WriteLine(g.isProperCyclicColoring());
+            // }
         }
     }
 }
