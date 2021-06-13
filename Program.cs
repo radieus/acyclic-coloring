@@ -62,20 +62,29 @@ namespace acyclic_coloring
             //System.Console.WriteLine(fbColors);
             //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
 
-            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
-            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
-            foreach(var f in fileArray)
-            {
-                System.Console.WriteLine(f);
-            }
-            Graph f1 = rd.createGraphFromPath(fileArray[0]);
-            System.Console.WriteLine("f1 getDelta: " + f1.getDelta());
-            System.Console.WriteLine("f1 getC: " + f1.getC());
-            System.Console.WriteLine("f1 getV: " + f1.getV());
-            // int fbColors = f1.HalAlgorithm(showProgress: true);
-            // //int fbColors = f1.NewAcyclicColoring(showProgress: true);
-            // System.Console.WriteLine(fbColors);
-            // System.Console.WriteLine(f1.isProperCyclicColoring());
+            // string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            // string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            // foreach(var f in fileArray)
+            // {
+            //     System.Console.WriteLine(f);
+            //     Graph g = rd.createGraphFromPath(f);
+            //     System.Console.WriteLine("f1 getV: " + g.getV());
+            //     int noColors = g.HalAlgorithm(showProgress: false);
+            //     System.Console.WriteLine("f1 fbColors: " + noColors);
+            //     System.Console.WriteLine(g.isProperCyclicColoring());
+            // }
+
+            // Graph g14 = rd.createGraphFromDataset("ours/G14.txt");
+            // System.Console.WriteLine("f1 getV: " + g14.getV());
+            // int noColors = g14.HalAlgorithm(showProgress: false);
+            // System.Console.WriteLine("f1 fbColors: " + noColors);
+            // System.Console.WriteLine(g14.isProperCyclicColoring());
+
+            // noColors = g14.NewAcyclicColoring();
+            // System.Console.WriteLine(g14.isProperCyclicColoring());
+
+            // noColors = g14.WelshPowellAlgorithm();
+            // System.Console.WriteLine(g14.isProperCyclicColoring());
         }
     }
 }

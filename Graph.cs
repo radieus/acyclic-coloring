@@ -36,7 +36,7 @@ namespace acyclic_coloring
             {
                 mapFromZero.Add(v, i);
                 i++;
-                System.Console.WriteLine(i + " " + v);
+                //System.Console.WriteLine(i + " " + v);
             }         
 
             Graph g = new Graph(vertices.Count);
@@ -50,7 +50,8 @@ namespace acyclic_coloring
         }
         public Graph createGraphFromDataset(string fileFromDataset)
         {
-            string startupPath = System.IO.Directory.GetCurrentDirectory();
+            // find path to project
+            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
             string path = startupPath + "/dataset/" + fileFromDataset;
             return createGraphFromPath(path);
         }
@@ -92,6 +93,19 @@ namespace acyclic_coloring
         {
             adj[v].Add(w);
             adj[w].Add(v);
+        }
+
+        public void saveToFile(string fileName) {
+            // Write file using StreamWriter  
+            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            using (StreamWriter writer = new StreamWriter(startupPath + fileName))  
+            {  
+                writer.WriteLine("Monica Rathbun");  
+                writer.WriteLine("Vidya Agarwal");  
+                writer.WriteLine("Mahesh Chand");  
+                writer.WriteLine("Vijay Anand");  
+                writer.WriteLine("Jignesh Trivedi");  
+            }  
         }
 
         private Graph createGraphFromColors(List<int> desiredColors)
@@ -436,9 +450,9 @@ namespace acyclic_coloring
         //     if (adj[u])
         // }
 
-        public Dictionary<int, List<int>> getColorToEdges(int u)
+        public Dictionary<int, HashSet<int>> getColorToEdges(int u)
         {
-            var colorToEdges = new Dictionary<int, List<int>>();  // key-color, value-edges
+            var colorToEdges = new Dictionary<int, HashSet<int>>();  // key-color, value-edges
 
             foreach(int n in adj[u])
             {
@@ -450,7 +464,7 @@ namespace acyclic_coloring
 
                 if (!colorToEdges.ContainsKey(ColorOfNeighbor))
                 {
-                    colorToEdges[ColorOfNeighbor] = new List<int>();
+                    colorToEdges[ColorOfNeighbor] = new HashSet<int>();
                 }
                 colorToEdges[ColorOfNeighbor].Add(n);
             }
@@ -479,11 +493,11 @@ namespace acyclic_coloring
             // returns empty list if P_i(u) is satisfied
             // if not it returns list of neighbours of u to recolor
             var l = new List<int>();
-            Dictionary<int, List<int>> colorToEdges = getColorToEdges(u);
+            Dictionary<int, HashSet<int>> colorToEdges = getColorToEdges(u);
 
             //System.Console.WriteLine("colorToEdges.Count" + colorToEdges.Count);
 
-            foreach(KeyValuePair<int, List<int>> colorList in colorToEdges)
+            foreach(KeyValuePair<int, HashSet<int>> colorList in colorToEdges)
             {
                 int color = colorList.Key;
                 if (colorToEdges[color].Count <= 1)  // color appears only once
@@ -496,9 +510,9 @@ namespace acyclic_coloring
                     {
                         continue;
                     }
-                    Dictionary<int, List<int>> colorToEdgesOfN = getColorToEdges(n);
+                    Dictionary<int, HashSet<int>> colorToEdgesOfN = getColorToEdges(n);
                     Boolean neighborToAdd = true;
-                    foreach(KeyValuePair<int, List<int>> entry in colorToEdgesOfN)  // iterate through NN's
+                    foreach(KeyValuePair<int, HashSet<int>> entry in colorToEdgesOfN)  // iterate through NN's
                     {
                         if (entry.Value.Count > 1)  // our statement is not satisfied
                         {
@@ -536,7 +550,7 @@ namespace acyclic_coloring
                     continue;
                 }
                 List<int> verticesToRecolor = isPropertyPiSatisfied(i);
-                Dictionary<int, List<int>> colorToEdges = getColorToEdges(i);
+                Dictionary<int, HashSet<int>> colorToEdges = getColorToEdges(i);
                 if (verticesToRecolor.Count > 0)
                 {
                     // TODO: check if proper logic behind it?

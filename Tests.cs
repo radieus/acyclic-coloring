@@ -1,4 +1,5 @@
 using Xunit;
+using Xunit.Abstractions;
 using System.IO;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,15 @@ namespace acyclic_coloring
 {
     public class UnitTest1
     {
+        private GraphReader rd;
+        private readonly ITestOutputHelper output;
+
+        public UnitTest1(ITestOutputHelper output)
+        {
+            this.output = output;
+            this.rd = new GraphReader();
+        }
+
         [Fact(Skip ="wrong path in tests")]
         public void TestFb()
         {
@@ -123,7 +133,6 @@ namespace acyclic_coloring
         {
             Graph g10 = new Graph(20);
             g10.addEdge(0, 1);
-            g10.addEdge(0, 1);
             g10.addEdge(3, 2);
             g10.addEdge(1, 2);
             g10.addEdge(4, 3);
@@ -175,14 +184,12 @@ namespace acyclic_coloring
 
             var c = g10.WelshPowellAlgorithm();
             Assert.Equal(5, c);
-            // TODO: check why not proper cyclic coloring
+            // TODO: check why not proper cyclic coloring - probably it is NOT chordal...
+            // chordal graphs are hard to define in a multi-cycle env (cycles inside cycles)
             // Assert.True(g10.isProperCyclicColoring());
 
-            // Assert.InRange<Int32>(g10.NewAcyclicColoring(), 5, 5);
-            // Assert.True(g10.isProperCyclicColoring());
-
-            // Assert.Equal(3, g10.HalAlgorithm());
-            // Assert.True(g10.isProperCyclicColoring());
+            Assert.InRange<Int32>(g10.HalAlgorithm(), 3, 5);
+            Assert.True(g10.isProperCyclicColoring());
         }
 
         [Fact]
@@ -284,8 +291,11 @@ namespace acyclic_coloring
             Assert.Equal(2, c);
             //Assert.True(g11.isProperCyclicColoring());
 
-            // Assert.InRange<Int32>(g12.NewAcyclicColoring(), 4, 5);
-            // Assert.True(g12.isProperCyclicColoring());
+            Assert.InRange<Int32>(g11.NewAcyclicColoring(), 2, 11);
+            Assert.True(g11.isProperCyclicColoring());
+
+            Assert.InRange<Int32>(g11.HalAlgorithm(), 2, 10);
+            Assert.True(g11.isProperCyclicColoring());
         }
 
         [Fact]
@@ -318,6 +328,9 @@ namespace acyclic_coloring
 
             Assert.InRange<Int32>(g12.NewAcyclicColoring(), 4, 5);
             Assert.True(g12.isProperCyclicColoring());
+
+            Assert.InRange<Int32>(g12.HalAlgorithm(), 4, 5);
+            Assert.True(g12.isProperCyclicColoring());
         }
 
         [Fact]
@@ -337,6 +350,12 @@ namespace acyclic_coloring
             Butterfly.addEdge(8, 12);
 
             Assert.Equal(2, Butterfly.HalAlgorithm());
+            Assert.True(Butterfly.isProperCyclicColoring());
+
+            Assert.InRange<Int32>(Butterfly.NewAcyclicColoring(), 2, 2);
+            Assert.True(Butterfly.isProperCyclicColoring());
+
+            Assert.InRange<Int32>(Butterfly.HalAlgorithm(), 2, 2);
             Assert.True(Butterfly.isProperCyclicColoring());
         }
 
@@ -379,9 +398,28 @@ namespace acyclic_coloring
             Assert.Equal(6, g13.WelshPowellAlgorithm());
             Assert.True(g13.isProperCyclicColoring());
 
+            Assert.InRange<Int32>(g13.NewAcyclicColoring(), 6, 10);
+            Assert.True(g13.isProperCyclicColoring());
+
             int noColors = g13.HalAlgorithm();
             Assert.InRange<Int32>(noColors, 6, g13.getC());
             Assert.True(g13.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestG14() {
+            Graph g = rd.createGraphFromDataset("ours/G14.txt");
+
+            Assert.InRange<Int32>(g.HalAlgorithm(), 4, 4);
+            Assert.True(g.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestG14_1() {
+            Graph g = rd.createGraphFromDataset("ours/G14-1.txt");
+
+            Assert.InRange<Int32>(g.HalAlgorithm(), 4, 5);
+            Assert.True(g.isProperCyclicColoring());
         }
 
         [Fact]
