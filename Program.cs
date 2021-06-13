@@ -22,6 +22,8 @@ namespace acyclic_coloring
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            GraphReader rd = new GraphReader();
 
             Graph g1 = new Graph(5);
             g1.addEdge(1, 0);
@@ -46,12 +48,18 @@ namespace acyclic_coloring
             g5.addEdge(4, 8);
             g5.addEdge(5, 8);
             g5.addEdge(7, 8);
-
             // int noColors = g5.HalAlgorithm();
             // System.Console.WriteLine("g5 - noColors" + noColors);
             // System.Console.WriteLine("g5.getC() : " + g5.getC());
 
-            GraphReader rd = new GraphReader();
+            ///////////////////////////
+            //// generating random Graph
+            // var gen = new RandomGraphGenerator();
+            // Graph g = gen.generate(15, 20);
+            // g.saveToFile("g.txt");
+            // Graph g2 = rd.createGraphFromPath(startupPath + "g.txt");
+            // g2.saveToFile("g.txt");
+            ///////////////////////////
 
             // Graph graphFromFile = rd.createGraphFromDataset("facebook_combined.txt");
             // System.Console.WriteLine("graphFromFile getDelta: " + graphFromFile.getDelta());
@@ -62,29 +70,34 @@ namespace acyclic_coloring
             //System.Console.WriteLine(fbColors);
             //System.Console.WriteLine(graphFromFile.isProperCyclicColoring());
 
-            // string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
-            // string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
-            // foreach(var f in fileArray)
-            // {
-            //     System.Console.WriteLine(f);
-            //     Graph g = rd.createGraphFromPath(f);
-            //     System.Console.WriteLine("f1 getV: " + g.getV());
-            //     int noColors = g.HalAlgorithm(showProgress: false);
-            //     System.Console.WriteLine("f1 fbColors: " + noColors);
-            //     System.Console.WriteLine(g.isProperCyclicColoring());
-            // }
+            // run for all Graphs from facebook dataset
+            string folderPath = System.IO.Directory.GetCurrentDirectory() + "/dataset/facebook/";
+            string[] fileArray = Directory.GetFiles(folderPath, "*.edges");
+            foreach(var f in fileArray)
+            {
+                System.Console.WriteLine(f);
+                if (f.Contains("1912.edges")) {
+                    System.Console.WriteLine("SKIP");
+                    continue;
+                }
+                Graph g = rd.createGraphFromPath(f);
+                System.Console.WriteLine("f1 getV: " + g.getV());
+                int noColors = g.HalAlgorithm(showProgress: false);
+                System.Console.WriteLine("f1 fbColors: " + noColors);
+                System.Console.WriteLine(g.isProperCyclicColoring());
+            }
 
-            // Graph g14 = rd.createGraphFromDataset("ours/G14.txt");
-            // System.Console.WriteLine("f1 getV: " + g14.getV());
-            // int noColors = g14.HalAlgorithm(showProgress: false);
-            // System.Console.WriteLine("f1 fbColors: " + noColors);
-            // System.Console.WriteLine(g14.isProperCyclicColoring());
+            DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
 
-            // noColors = g14.NewAcyclicColoring();
-            // System.Console.WriteLine(g14.isProperCyclicColoring());
-
-            // noColors = g14.WelshPowellAlgorithm();
-            // System.Console.WriteLine(g14.isProperCyclicColoring());
+            foreach(FileInfo fi in dir.GetFiles())
+            {
+                System.Console.WriteLine(fi.FullName);  // which file
+                Graph g = rd.createGraphFromPath(fi.FullName);
+                //g.saveToFile("g2.txt");
+                g.HalAlgorithm();
+                g.printColoring();
+                System.Console.WriteLine(g.isProperCyclicColoring(printDebug: true));
+            }
         }
     }
 }

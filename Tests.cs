@@ -188,7 +188,7 @@ namespace acyclic_coloring
             // chordal graphs are hard to define in a multi-cycle env (cycles inside cycles)
             // Assert.True(g10.isProperCyclicColoring());
 
-            Assert.InRange<Int32>(g10.HalAlgorithm(), 3, 5);
+            Assert.InRange<Int32>(g10.HalAlgorithm(), 3, 9);
             Assert.True(g10.isProperCyclicColoring());
         }
 
@@ -420,6 +420,55 @@ namespace acyclic_coloring
 
             Assert.InRange<Int32>(g.HalAlgorithm(), 4, 5);
             Assert.True(g.isProperCyclicColoring());
+        }
+
+        [Fact]
+        public void TestRandomGraphs() {
+            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            DirectoryInfo dir = new DirectoryInfo(startupPath + "dataset/random/");
+
+            foreach(FileInfo fi in dir.GetFiles())
+            {
+                output.WriteLine(fi.FullName);
+
+                Graph g = rd.createGraphFromPath(fi.FullName);
+                Assert.InRange<Int32>(g.HalAlgorithm(), 3, g.getC());
+                Assert.True(g.isProperCyclicColoring());
+            }
+
+        }
+
+        [Fact]
+        public void SaveToFile() {
+            Graph g = rd.createGraphFromDataset("ours/G14-1.txt");
+            string newGraphFileTxt = "g.txt";
+            g.saveToFile(newGraphFileTxt);
+
+            string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            Graph gLoaded = rd.createGraphFromPath(startupPath + newGraphFileTxt);
+
+            List<int>[] gAdj = g.getAdj();
+            List<int>[] g2Adj = gLoaded.getAdj();
+            for (int i = 0; i < gAdj.Length; i++) {
+                foreach(var n in gAdj[i]) {
+                    Assert.Contains(n, g2Adj[i]);
+                }
+            }   
+            if (File.Exists(Path.Combine(startupPath, newGraphFileTxt)))    
+            {    
+                File.Delete(Path.Combine(startupPath, newGraphFileTxt));    
+            }
+
+            // startupPath = startupPath.Remove(startupPath.Length - 1);
+            // string str = startupPath.Substring(0, startupPath.LastIndexOf('/'));
+            // output.WriteLine(str);
+
+            // if (File.Exists(Path.Combine(str, "removeMe.txt")))    
+            // {    
+            //     File.Delete(Path.Combine(str, "removeMe.txt"));    
+            // } else {
+            //     output.WriteLine("No file.");
+            // }
         }
 
         [Fact]
