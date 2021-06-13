@@ -6,6 +6,26 @@ using System.Threading;
 
 namespace acyclic_coloring
 {
+
+    public class RandomGraphGenerator
+    {
+        public Graph generate(int v, int e) {
+            Graph g = new Graph(v);
+            Random r = new Random();
+
+            for (int iter = 0; iter < e; iter++) {
+                int a = r.Next(v);
+                int b = r.Next(v);
+                while (a == b) {
+                    a = r.Next(v);
+                    b = r.Next(v);
+                }
+                g.addEdge(a, b);
+            }
+
+            return g;
+        }
+    }
     public class GraphReader
     {
         public Graph createGraphFromPath(string path)
@@ -65,6 +85,10 @@ namespace acyclic_coloring
             return this.V;
         }
         private List<int>[] adj; // Adjacency List Representation
+
+        public List<int>[] getAdj() {
+            return adj;
+        }
         public List<int> colors;  // i-th elem is an i-th vertex
 
         public Graph(int v)
@@ -74,6 +98,12 @@ namespace acyclic_coloring
             colors = Enumerable.Repeat(0, v).ToList();
             for (int i = 0; i < v; ++i)
                 adj[i] = new List<int>();
+        }
+
+        public void printColoring() {
+            for (int i = 0; i < V; i++) {
+                System.Console.WriteLine(i + " : " + colors[i]);
+            }
         }
 
         public void printGraph()
@@ -98,61 +128,72 @@ namespace acyclic_coloring
         public void saveToFile(string fileName) {
             // Write file using StreamWriter  
             string startupPath = AppContext.BaseDirectory.Substring(0, AppContext.BaseDirectory.IndexOf("bin"));
+            System.Console.WriteLine(startupPath + fileName);
             using (StreamWriter writer = new StreamWriter(startupPath + fileName))  
             {  
-                writer.WriteLine("Monica Rathbun");  
-                writer.WriteLine("Vidya Agarwal");  
-                writer.WriteLine("Mahesh Chand");  
-                writer.WriteLine("Vijay Anand");  
-                writer.WriteLine("Jignesh Trivedi");  
+                for (int i = 0; i < adj.Count(); i++) {
+                    foreach(var n in adj[i]) {
+                        if (n >= i)
+                            writer.WriteLine(i + " " + n);
+                    }
+                }
             }  
         }
 
         private Graph createGraphFromColors(List<int> desiredColors)
         {
-            Graph g = new Graph(this.V);
-            List<int> vertices = new List<int>();
-            for (int i = 0; i < this.V; i++)
+            // Graph g = new Graph(this.V);
+            // List<int> vertices = new List<int>();
+            // for (int i = 0; i < this.V; i++)
+            // {
+            //     if (desiredColors.Contains(this.colors[i]))
+            //     {
+            //         vertices.Add(i);
+            //         g.colors[i] = colors[i];
+            //     }
+            // }
+
+            // foreach (int v in vertices)
+            // {
+            //     foreach (int addV in this.adj[v])
+            //     {
+            //         if (vertices.Contains(addV))
+            //             g.adj[v].Add(addV);
+            //     }
+            // }
+            SortedSet<int> vertices = new SortedSet<int>();
+            HashSet<Edge> edges = new HashSet<Edge>();
+
+            foreach(var vv in desiredColors) {
+                vertices.Add(vv);
+            }
+            for (int v = 0; v < this.adj.Count(); v++)
             {
-                if (desiredColors.Contains(this.colors[i]))
-                {
-                    vertices.Add(i);
-                    g.colors[i] = colors[i];
+                foreach(var n in adj[v]) {
+                    if (desiredColors.Contains(v) && desiredColors.Contains(n)) {
+                        edges.Add(new Edge(v, n));
+                    }
                 }
             }
 
-            foreach (int v in vertices)
+            Dictionary<int, int> mapFromZero = new Dictionary<int, int>();
+            int i = 0;
+            foreach(var v in vertices)
             {
-                foreach (int addV in this.adj[v])
-                {
-                    if (vertices.Contains(addV))
-                        g.adj[v].Add(addV);
-                }
+                mapFromZero.Add(v, i);
+                i++;
+            }         
+
+            Graph g = new Graph(vertices.Count);
+            foreach(Edge edge in edges)
+            {
+                g.addEdge(mapFromZero[edge.a], mapFromZero[edge.b]);
             }
             return g;
         }
 
-        public Boolean isProperCyclicColoring()
+        public Boolean isProperCyclicColoring(Boolean printDebug=false)
         {
-            // check if 2-choosable subgraph is acyclic
-            var distinctColors = colors.Distinct();
-            int numberOfColors = distinctColors.Count();
-            //System.Console.WriteLine("numberOfColors: " + numberOfColors);
-
-            var combinations = distinctColors.SelectMany(x => distinctColors, (x, y) => Tuple.Create(x, y))
-                        .Where(tuple => tuple.Item1 < tuple.Item2);
-
-            foreach (var combination in combinations)
-            {
-                Graph g = createGraphFromColors(new List<int> { combination.Item1, combination.Item2 });
-                //System.Console.WriteLine(combination);
-                //g.printGraph();
-                if (g.isCyclic())
-                {
-                    return false;
-                }
-            }
-
             // check if proper coloring
             for (int i = 0; i < V; i++)
             {
@@ -162,6 +203,34 @@ namespace acyclic_coloring
                         return false;
                 }
             }
+
+            if (printDebug) {
+                System.Console.WriteLine("Proper coloring");
+            }
+
+            // check if 2-choosable subgraph is acyclic
+            var distinctColors = colors.Distinct();
+            int numberOfColors = distinctColors.Count();
+            //System.Console.WriteLine("numberOfColors: " + numberOfColors);
+
+            var combinations = distinctColors.SelectMany(x => distinctColors, (x, y) => Tuple.Create(x, y))
+                        .Where(tuple => tuple.Item1 < tuple.Item2);
+
+            foreach (Tuple<int, int> combination in combinations)
+            {
+                Graph g = createGraphFromColors(new List<int> { combination.Item1, combination.Item2 });
+                //System.Console.WriteLine(combination);
+                //g.printGraph();
+                if (g.isCyclic())
+                {
+                    if (printDebug) {
+                        System.Console.WriteLine("Not acyclic here - Graph induced by 2 below colors:");
+                        System.Console.WriteLine(combination.Item1 + " " + combination.Item2);
+                    }
+                    return false;
+                }
+            }
+
             return true;
         }
 
