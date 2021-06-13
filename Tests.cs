@@ -430,7 +430,7 @@ namespace acyclic_coloring
 
             foreach(FileInfo fi in dir.GetFiles())
             {
-                output.WriteLine(fi.FullName);
+                // output.WriteLine(fi.FullName);
 
                 Graph g = rd.createGraphFromPath(fi.FullName);
                 Assert.InRange<Int32>(g.HalAlgorithm(), 3, g.getC());
